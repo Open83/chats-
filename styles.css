@@ -3,6 +3,7 @@
 body {
     font-family: 'Poppins', sans-serif;
     overflow-x: hidden;
+    transition: background-color 1.5s ease-in-out;
 }
 
 .message-enter {
@@ -67,4 +68,61 @@ body {
 
 .chapter-timeline::-webkit-scrollbar {
     display: none;
+}
+
+/* Ending screen animations */
+.heart-pulse {
+    animation: heartbeat 1s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.orbit-container {
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.orbit-item {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    margin: -15px 0 0 -15px;
+    font-size: 24px;
+    animation: orbit 4s ease-in-out infinite;
+    animation-delay: var(--delay);
+}
+
+@keyframes orbit {
+    0% {
+        transform: rotate(0deg) translateX(80px) rotate(0deg);
+        opacity: 0;
+    }
+    25% {
+        opacity: 1;
+    }
+    75% {
+        opacity: 1;
+    }
+    100% {
+        transform: rotate(360deg) translateX(80px) rotate(-360deg);
+        opacity: 0;
+    }
+}
+
+/* Smooth section background transitions */
+#vanta-bg {
+    transition: all 1.5s ease-in-out;
+}
+
+canvas {
+    transition: opacity 0.5s ease-in-out;
 }
