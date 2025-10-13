@@ -165,44 +165,17 @@ function loadChapter(chapter) {
         pauseAutoPlay();
     }
     
-    // Change background based on chapter
-    let bgColor, vantaColor;
-    switch(chapter) {
-        case 'beginning':
-            bgColor = '#1a0a2e'; // Deep purple
-            vantaColor = 0xcc66ff; // Light purple
-            break;
-        case 'love':
-            bgColor = '#2d1b3d'; // Purple-pink
-            vantaColor = 0xff66cc; // Pink
-            break;
-        case 'talks':
-            bgColor = '#0f1b3d'; // Deep blue
-            vantaColor = 0x3366ff; // Blue
-            break;
-        case 'fights':
-            bgColor = '#2d1111'; // Deep red
-            vantaColor = 0xff3333; // Red
-            break;
-        case 'forever':
-            bgColor = '#1a0d2e'; // Deep violet
-            vantaColor = 0x9933ff; // Purple
-            break;
-        default:
-            bgColor = '#1a0a2e';
-            vantaColor = 0xcc66ff;
-    }
+    // Set initial background color for the chapter
+    const colorSchemes = getChapterColorScheme(chapter);
     
-    // Update Vanta.js background color
     if (vantaEffect) {
         vantaEffect.setOptions({
-            color: vantaColor,
-            backgroundColor: bgColor
+            color: colorSchemes.vantaStart,
+            backgroundColor: colorSchemes.bgStart
         });
     }
     
-    // Also update the main background color with transition
-    document.body.style.backgroundColor = bgColor;
+    document.body.style.backgroundColor = colorSchemes.bgStart;
     
     // Show stats first
     showStats();
@@ -270,6 +243,9 @@ function displayMessage(message, animate = true) {
     let bubbleClass = message.sender === 'you' ? 
         'bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-l-2xl rounded-tr-2xl' : 
         'bg-gray-700 text-gray-200 rounded-r-2xl rounded-tl-2xl';
+    
+    // Update background color based on progress in chapter
+    updateBackgroundByProgress();
     
     // Create typing indicator first
     if (message.sender === 'her') {
@@ -528,6 +504,105 @@ function getChapterTitle(chapter) {
         'forever': '💌 FOREVER & ALWAYS'
     };
     return titles[chapter] || chapter.toUpperCase();
+}
+
+// Update background color based on progress within the chapter
+function updateBackgroundByProgress() {
+    const messages = getFilteredMessages(currentChapter);
+    const totalMessages = messages.length;
+    const progress = currentMessageIndex / totalMessages;
+    
+    // Get color schemes for current chapter
+    const colorSchemes = getChapterColorScheme(currentChapter);
+    
+    // Interpolate between start and end colors based on progress
+    const bgColor = interpolateColor(colorSchemes.bgStart, colorSchemes.bgEnd, progress);
+    const vantaColor = interpolateHexColor(colorSchemes.vantaStart, colorSchemes.vantaEnd, progress);
+    
+    // Update colors
+    if (vantaEffect) {
+        vantaEffect.setOptions({
+            color: vantaColor,
+            backgroundColor: bgColor
+        });
+    }
+    document.body.style.backgroundColor = bgColor;
+}
+
+// Get color scheme for each chapter (start to end gradient)
+function getChapterColorScheme(chapter) {
+    const schemes = {
+        beginning: {
+            bgStart: '#1a0a2e',    // Deep purple
+            bgEnd: '#2d1b4e',      // Lighter purple
+            vantaStart: 0xcc66ff,  // Light purple
+            vantaEnd: 0xe699ff     // Lighter purple
+        },
+        love: {
+            bgStart: '#2d1b3d',    // Purple-pink
+            bgEnd: '#4a1f4f',      // Brighter purple-pink
+            vantaStart: 0xff66cc,  // Pink
+            vantaEnd: 0xff99dd     // Lighter pink
+        },
+        talks: {
+            bgStart: '#0f1b3d',    // Deep blue
+            bgEnd: '#1a2f5f',      // Lighter blue
+            vantaStart: 0x3366ff,  // Blue
+            vantaEnd: 0x6699ff     // Lighter blue
+        },
+        fights: {
+            bgStart: '#2d1111',    // Deep red
+            bgEnd: '#4a1f1f',      // Lighter red
+            vantaStart: 0xff3333,  // Red
+            vantaEnd: 0xff6666     // Lighter red
+        },
+        forever: {
+            bgStart: '#1a0d2e',    // Deep violet
+            bgEnd: '#3d1f5f',      // Brighter violet
+            vantaStart: 0x9933ff,  // Purple
+            vantaEnd: 0xcc66ff     // Lighter purple
+        }
+    };
+    return schemes[chapter] || schemes.beginning;
+}
+
+// Interpolate between two hex color strings (e.g., '#1a0a2e' to '#2d1b4e')
+function interpolateColor(color1, color2, progress) {
+    const c1 = hexToRgb(color1);
+    const c2 = hexToRgb(color2);
+    
+    const r = Math.round(c1.r + (c2.r - c1.r) * progress);
+    const g = Math.round(c1.g + (c2.g - c1.g) * progress);
+    const b = Math.round(c1.b + (c2.b - c1.b) * progress);
+    
+    return `rgb(${r}, ${g}, ${b})`;
+}
+
+// Interpolate between two hex numbers (e.g., 0xcc66ff to 0xe699ff)
+function interpolateHexColor(color1, color2, progress) {
+    const r1 = (color1 >> 16) & 0xff;
+    const g1 = (color1 >> 8) & 0xff;
+    const b1 = color1 & 0xff;
+    
+    const r2 = (color2 >> 16) & 0xff;
+    const g2 = (color2 >> 8) & 0xff;
+    const b2 = color2 & 0xff;
+    
+    const r = Math.round(r1 + (r2 - r1) * progress);
+    const g = Math.round(g1 + (g2 - g1) * progress);
+    const b = Math.round(b1 + (b2 - b1) * progress);
+    
+    return (r << 16) | (g << 8) | b;
+}
+
+// Convert hex string to RGB object
+function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : { r: 0, g: 0, b: 0 };
 }
 
 // Don't auto-load on page load, wait for user to click start
