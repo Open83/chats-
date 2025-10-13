@@ -9,7 +9,7 @@ let vantaEffect = VANTA.NET({
     scale: 1.00,
     scaleMobile: 1.00,
     color: 0xcc66ff,
-    backgroundColor: 0x11111,
+    backgroundColor: '#1a0a2e',
     points: 10.00,
     maxDistance: 22.00,
     spacing: 17.00
@@ -166,22 +166,43 @@ function loadChapter(chapter) {
     }
     
     // Change background based on chapter
-    let bgColor;
+    let bgColor, vantaColor;
     switch(chapter) {
-        case 'love': bgColor = 0xff66cc; break;
-        case 'talks': bgColor = 0x3366ff; break;
-        case 'fights': bgColor = 0xff3333; break;
-        case 'forever': bgColor = 0x9933ff; break;
-        default: bgColor = 0xcc66ff;
+        case 'beginning':
+            bgColor = '#1a0a2e'; // Deep purple
+            vantaColor = 0xcc66ff; // Light purple
+            break;
+        case 'love':
+            bgColor = '#2d1b3d'; // Purple-pink
+            vantaColor = 0xff66cc; // Pink
+            break;
+        case 'talks':
+            bgColor = '#0f1b3d'; // Deep blue
+            vantaColor = 0x3366ff; // Blue
+            break;
+        case 'fights':
+            bgColor = '#2d1111'; // Deep red
+            vantaColor = 0xff3333; // Red
+            break;
+        case 'forever':
+            bgColor = '#1a0d2e'; // Deep violet
+            vantaColor = 0x9933ff; // Purple
+            break;
+        default:
+            bgColor = '#1a0a2e';
+            vantaColor = 0xcc66ff;
     }
     
-    // Update existing Vanta instance
+    // Update Vanta.js background color
     if (vantaEffect) {
         vantaEffect.setOptions({
-            color: bgColor,
-            backgroundColor: 0x11111
+            color: vantaColor,
+            backgroundColor: bgColor
         });
     }
+    
+    // Also update the main background color with transition
+    document.body.style.backgroundColor = bgColor;
     
     // Show stats first
     showStats();
@@ -390,28 +411,60 @@ function showEnding() {
     document.querySelector('#ending-screen p:nth-child(3)').textContent = 
         `${totalMessages} messages shared`;
     
-    // Create heart animation
+    // Create animated stats visualization
     const heartContainer = document.querySelector('.heart-animation');
-    heartContainer.innerHTML = ''; // Clear previous hearts
-    for (let i = 0; i < 30; i++) {
-        const heart = document.createElement('div');
-        heart.className = 'absolute text-pink-400';
-        heart.innerHTML = '❤️';
-        heart.style.fontSize = `${Math.random() * 20 + 10}px`;
-        heart.style.left = `${Math.random() * 100}%`;
-        heart.style.top = `${Math.random() * 100}%`;
-        heart.style.opacity = '0';
-        heartContainer.appendChild(heart);
-        
-        gsap.to(heart, {
-            opacity: 1,
-            y: `-=${Math.random() * 40 + 20}`,
-            duration: 2,
-            repeat: -1,
-            yoyo: true,
-            delay: Math.random() * 2
-        });
-    }
+    heartContainer.innerHTML = ''; // Clear previous content
+    
+    // Create a beautiful circular progress animation
+    heartContainer.innerHTML = `
+        <div class="relative w-full h-full flex items-center justify-center">
+            <svg class="absolute" width="160" height="160" viewBox="0 0 160 160">
+                <!-- Outer ring -->
+                <circle cx="80" cy="80" r="70" fill="none" stroke="#ec4899" stroke-width="2" opacity="0.2"/>
+                <circle id="progress-ring" cx="80" cy="80" r="70" fill="none" stroke="url(#gradient)" 
+                        stroke-width="4" stroke-linecap="round" 
+                        stroke-dasharray="440" stroke-dashoffset="440"
+                        transform="rotate(-90 80 80)"/>
+                
+                <!-- Gradient definition -->
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                
+                <!-- Center heart pulse -->
+                <text x="80" y="90" text-anchor="middle" font-size="40" class="heart-pulse">💕</text>
+            </svg>
+            
+            <!-- Orbiting icons -->
+            <div class="orbit-container absolute w-full h-full">
+                <div class="orbit-item" style="--delay: 0s">💝</div>
+                <div class="orbit-item" style="--delay: 1s">💖</div>
+                <div class="orbit-item" style="--delay: 2s">💗</div>
+                <div class="orbit-item" style="--delay: 3s">💓</div>
+            </div>
+        </div>
+    `;
+    
+    // Animate the progress ring
+    gsap.to('#progress-ring', {
+        strokeDashoffset: 0,
+        duration: 3,
+        ease: 'power2.out'
+    });
+    
+    // Add pulse animation to center heart
+    gsap.to('.heart-pulse', {
+        scale: 1.2,
+        opacity: 0.8,
+        duration: 1,
+        repeat: -1,
+        yoyo: true,
+        ease: 'power1.inOut',
+        transformOrigin: 'center'
+    });
 }
 
 // Reset the journey
