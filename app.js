@@ -103,14 +103,21 @@ applyFilter.addEventListener('click', () => {
         return;
     }
     
+    // Set end date to end of day for better filtering
+    endDate.setHours(23, 59, 59, 999);
+    
     // Set global date filters
     globalStartDate = startDate;
     globalEndDate = endDate;
     
-    const filteredMessages = getFilteredMessages(currentChapter);
+    // Check if any messages exist across all chapters
+    let totalFilteredMessages = 0;
+    Object.keys(chatData).forEach(chapterKey => {
+        totalFilteredMessages += getFilteredMessages(chapterKey).length;
+    });
     
-    if (filteredMessages.length === 0) {
-        alert('No messages found in this date range');
+    if (totalFilteredMessages === 0) {
+        alert('No messages found in this date range across any chapter. Please select a different date range.');
         globalStartDate = null;
         globalEndDate = null;
         return;
@@ -153,11 +160,9 @@ function getFilteredMessages(chapter) {
 function loadChapter(chapter) {
     chatContainer.innerHTML = '';
     currentMessageIndex = 0;
-    showStats();
     
     if (isPlaying) {
         pauseAutoPlay();
-        startAutoPlay();
     }
     
     // Change background based on chapter
@@ -178,13 +183,39 @@ function loadChapter(chapter) {
         });
     }
     
-    // Show first message
-    showNextMessage();
+    // Show stats first
+    showStats();
+    
+    // Check if there are messages to display
+    const messages = getFilteredMessages(currentChapter);
+    if (messages.length > 0) {
+        // Show first message
+        showNextMessage();
+    }
 }
 
 // Show next message in current chapter
 function showNextMessage() {
     const messages = getFilteredMessages(currentChapter);
+    
+    // If no messages in current chapter (filtered), try next chapter
+    if (messages.length === 0) {
+        if (currentChapter === 'forever') {
+            showEnding();
+        } else {
+            const nextChapter = getNextChapter(currentChapter);
+            if (nextChapter) {
+                currentChapter = nextChapter;
+                currentMessageIndex = 0;
+                loadChapter(currentChapter);
+                
+                // Update active chapter button
+                chapterBtns.forEach(b => b.classList.remove('bg-pink-500'));
+                document.querySelector(`[data-chapter="${currentChapter}"]`).classList.add('bg-pink-500');
+            }
+        }
+        return;
+    }
     
     if (currentMessageIndex >= messages.length) {
         if (currentChapter === 'forever') {
@@ -404,33 +435,46 @@ function resetJourney() {
 function showStats() {
     const messages = getFilteredMessages(currentChapter);
     
+    const statsDiv = document.createElement('div');
+    statsDiv.className = 'bg-gray-800 bg-opacity-70 p-4 rounded-lg mb-4 text-center';
+    
     if (messages.length === 0) {
-        const statsDiv = document.createElement('div');
-        statsDiv.className = 'bg-gray-800 bg-opacity-70 p-4 rounded-lg mb-4 text-center';
         statsDiv.innerHTML = `
-            <h3 class="text-lg font-bold mb-2">${currentChapter.replace(/([A-Z])/g, ' $1').toUpperCase()}</h3>
-            <p class="text-sm text-yellow-400">No messages in this date range</p>
-            ${globalStartDate ? '<p class="text-xs text-pink-400 mt-1">(filtered view)</p>' : ''}
+            <h3 class="text-lg font-bold mb-2 text-yellow-400">${getChapterTitle(currentChapter)}</h3>
+            <div class="bg-yellow-900 bg-opacity-40 p-3 rounded-lg border border-yellow-600">
+                <p class="text-sm text-yellow-200">⚠️ No messages found in this date range</p>
+                <p class="text-xs text-yellow-300 mt-1">Try a different date range or clear the filter</p>
+            </div>
+            ${globalStartDate ? '<p class="text-xs text-pink-400 mt-2">(filtered view active)</p>' : ''}
         `;
         chatContainer.prepend(statsDiv);
         return;
     }
-    
-    const statsDiv = document.createElement('div');
-    statsDiv.className = 'bg-gray-800 bg-opacity-70 p-4 rounded-lg mb-4 text-center';
     
     const startDate = new Date(messages[0].date);
     const endDate = new Date(messages[messages.length-1].date);
     const days = Math.round((endDate - startDate) / (1000 * 60 * 60 * 24));
     
     statsDiv.innerHTML = `
-        <h3 class="text-lg font-bold mb-2">${currentChapter.replace(/([A-Z])/g, ' $1').toUpperCase()}</h3>
+        <h3 class="text-lg font-bold mb-2">${getChapterTitle(currentChapter)}</h3>
         <p class="text-sm">${messages.length} messages</p>
         <p class="text-sm">${days} days</p>
         <p class="text-sm">${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}</p>
-        ${globalStartDate ? '<p class="text-xs text-pink-400 mt-1">(filtered view)</p>' : ''}
+        ${globalStartDate ? '<p class="text-xs text-pink-400 mt-1">(filtered view active)</p>' : ''}
     `;
     chatContainer.prepend(statsDiv);
+}
+
+// Helper function to get chapter title
+function getChapterTitle(chapter) {
+    const titles = {
+        'beginning': '🩵 THE BEGINNING',
+        'love': '💞 FALLING IN LOVE',
+        'talks': '💬 LATE-NIGHT TALKS',
+        'fights': '😤 CRAZY FIGHTS',
+        'forever': '💌 FOREVER & ALWAYS'
+    };
+    return titles[chapter] || chapter.toUpperCase();
 }
 
 // Don't auto-load on page load, wait for user to click start
