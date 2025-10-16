@@ -1,65 +1,567 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
-  <title>The Timeless Universe — Your Love Story</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoveTime Galaxia | A Cosmic Love Story</title>
+    <link rel="icon" type="image/x-icon" href="https://static.photos/blue/200x200/42">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;500;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .portal-glow {
+            box-shadow: 0 0 60px rgba(94, 234, 212, 0.7);
+            animation: pulse 3s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 60px rgba(94, 234, 212, 0.7); }
+            50% { box-shadow: 0 0 100px rgba(94, 234, 212, 0.9); }
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(94,234,212,1) 0%, rgba(59,130,246,1) 100%);
+            box-shadow: 0 0 15px rgba(94, 234, 212, 0.7);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-dot:hover {
+            transform: scale(1.5);
+            box-shadow: 0 0 25px rgba(94, 234, 212, 0.9);
+        }
+        
+        .timeline-dot.active {
+            transform: scale(1.8);
+            box-shadow: 0 0 30px rgba(94, 234, 212, 1);
+        }
+        
+        .timeline-connector {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(94,234,212,0.8) 0%, rgba(59,130,246,0.8) 100%);
+            transform-origin: left center;
+        }
+        
+        .message-bubble {
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(94, 234, 212, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .message-bubble:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(94, 234, 212, 0.3);
+        }
+        
+        .heart-message {
+            position: relative;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        .typewriter-text {
+            overflow: hidden;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .era-golden { background: linear-gradient(135deg, rgba(245,158,11,0.1) 0%, rgba(217,119,6,0.2) 100%); }
+        .era-night { background: linear-gradient(135deg, rgba(30,58,138,0.1) 0%, rgba(30,64,175,0.2) 100%); }
+        .era-starburst { background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(226,232,240,0.2) 100%); }
+    </style>
 </head>
-<body>
-  <canvas id="starfield" aria-hidden="true"></canvas>
+<body class="bg-black text-white overflow-x-hidden">
+    <!-- Vanta.js Background -->
+    <div id="vanta-bg" class="fixed top-0 left-0 w-full h-full z-0"></div>
 
-  <div id="app">
-    <header class="portal">
-      <div class="portal-inner">
-        <h1 class="title">The Timeless Universe</h1>
-        <p class="subtitle">"Every second we shared... became a star in my universe."</p>
-        <button id="enterBtn" class="btn">Enter the Gate of Time</button>
-      </div>
-    </header>
+    <!-- Main Container -->
+    <div id="app" class="relative z-10">
+        <!-- Portal Screen -->
+        <div id="portal-screen" class="min-h-screen flex flex-col items-center justify-center p-4">
+            <div class="max-w-4xl mx-auto text-center px-6 py-12 backdrop-blur-sm bg-black/30 rounded-xl border border-cyan-500/20">
+                <h1 class="text-4xl md:text-6xl font-serif mb-6 text-cyan-300">LoveTime Galaxia</h1>
+                <p class="text-xl md:text-2xl mb-8 font-light text-cyan-100">A cosmic journey through our love story</p>
+                
+                <div class="my-12 flex justify-center">
+                    <div id="portal-key" class="portal-glow w-64 h-64 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center cursor-pointer transform transition-all hover:scale-105">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-bounce">
+                            <path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"></path>
+                            <path d="m21 2-9.6 9.6"></path>
+                            <circle cx="7.5" cy="15.5" r="5.5"></circle>
+                        </svg>
+                    </div>
+                </div>
 
-    <main id="experience" class="hidden">
-      <section id="time-machine">
-        <div class="panel">
-          <div class="dial-wrap">
-            <svg id="timeDial" viewBox="0 0 400 400"></svg>
-            <div class="dial-center">
-              <div id="currentLabel">Choose a Moment</div>
-              <div class="controls">
-                <button id="playJourney" class="small-btn">Play Journey</button>
-              </div>
+                <p class="text-lg md:text-xl text-gray-300 mb-2">"Every moment we shared became a star in our universe"</p>
+                <p class="text-sm text-gray-400">Click the portal key to begin</p>
             </div>
-          </div>
         </div>
-      </section>
 
-      <section id="universe" class="hidden">
-        <div id="scene">
-          <div id="particles"></div>
-          <div id="bubble" class="bubble hidden">
-            <div class="chat-header">
-              <div id="chatTitle"></div>
-              <div id="chatDate"></div>
+        <!-- Time Machine Screen -->
+        <div id="timemachine-screen" class="hidden min-h-screen p-4 pt-20">
+            <nav class="fixed top-0 left-0 w-full z-50 p-4 backdrop-blur-sm bg-black/30 border-b border-cyan-500/20">
+                <div class="container mx-auto flex justify-between items-center">
+                    <button id="back-to-portal" class="text-cyan-300 hover:text-cyan-100 transition-colors flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        Back to Portal
+                    </button>
+                    <span class="text-cyan-100 font-light hidden md:block">"Our timeless love story"</span>
+                </div>
+            </nav>
+
+            <div class="flex flex-col items-center justify-center">
+                <div class="max-w-4xl w-full text-center mb-12">
+                    <h2 class="text-3xl md:text-5xl font-serif mb-4 text-cyan-300">Time Machine</h2>
+                    <p class="text-lg text-cyan-100 font-light max-w-2xl mx-auto">Click on any moment to relive that chapter of our story</p>
+                </div>
+
+                <div class="relative w-full max-w-xl aspect-square my-8">
+                    <div id="time-machine-dial" class="relative w-full h-full rounded-full border-2 border-cyan-500/30">
+                        <!-- Timeline dots will be added dynamically -->
+                    </div>
+                </div>
+
+                <div id="era-display" class="w-full max-w-2xl p-8 rounded-xl backdrop-blur-sm border border-cyan-500/20 transition-all duration-1000">
+                    <h3 class="text-2xl md:text-3xl font-serif mb-4 text-cyan-300" id="era-title">Select a moment in time</h3>
+                    <p class="text-gray-300" id="era-description">Click on any glowing dot to relive that chapter of our story</p>
+                    <div class="mt-6 flex justify-center">
+                        <button id="start-journey-btn" class="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 rounded-full flex items-center transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
+                            Start Journey
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div id="chatBody" class="chat-body"></div>
-            <div class="bubble-footer">
-              <button id="closeBubble" class="small-btn">Back</button>
+        </div>
+
+        <!-- Universe Screen -->
+        <div id="universe-screen" class="hidden min-h-screen">
+            <div id="star-bg" class="fixed top-0 left-0 w-full h-full z-0"></div>
+            
+            <nav class="fixed top-0 left-0 w-full z-50 p-4 backdrop-blur-sm bg-black/30 border-b border-cyan-500/20 flex justify-between">
+                <button id="back-to-timemachine" class="text-cyan-300 hover:text-cyan-100 transition-colors flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    Back to Time Machine
+                </button>
+                <div class="text-cyan-100 font-light hidden md:block">
+                    <span id="current-date">Summer 2023</span>
+                </div>
+            </nav>
+
+            <div class="container mx-auto px-4 pt-24 pb-16 relative z-10">
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl md:text-6xl font-serif mb-4 text-cyan-300" id="universe-title">Our Summer Adventures</h1>
+                    <p class="text-xl text-cyan-100 max-w-2xl mx-auto">Messages from this chapter of our story</p>
+                </div>
+
+                <div id="messages-container" class="max-w-3xl mx-auto space-y-8">
+                    <!-- Messages will be populated dynamically -->
+                </div>
+
+                <div class="flex justify-between mt-16 max-w-3xl mx-auto">
+                    <button id="prev-chapter" class="px-6 py-3 bg-cyan-600/50 hover:bg-cyan-700/50 rounded-full flex items-center transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        Previous
+                    </button>
+                    <button id="next-chapter" class="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 rounded-full flex items-center transition-all">
+                        Next
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                </div>
             </div>
-          </div>
         </div>
-      </section>
 
-      <section id="final" class="hidden">
-        <div class="final-wrap">
-          <div id="finalStar" class="final-star hidden"></div>
-          <div id="finalLetter" class="final-letter hidden"></div>
+        <!-- Forever Screen -->
+        <div id="forever-screen" class="hidden min-h-screen flex flex-col items-center justify-center p-4 text-center">
+            <div class="max-w-2xl mx-auto backdrop-blur-sm bg-black/30 p-8 md:p-12 rounded-xl border border-cyan-500/20 mb-12">
+                <h1 class="text-3xl md:text-5xl font-serif mb-8 text-cyan-300">Dear Love,</h1>
+                <div id="final-letter" class="text-lg md:text-xl leading-relaxed text-left space-y-6">
+                    <!-- Letter content will be typed out -->
+                </div>
+            </div>
+
+            <button id="restart-btn" class="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 rounded-full text-xl font-medium flex items-center transition-all transform hover:scale-105 shadow-lg shadow-cyan-500/20">
+                Begin Our Next Chapter
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-3">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </button>
         </div>
-      </section>
-    </main>
+    </div>
 
-    <footer class="credit">Made with ❤️ — The Timeless Universe</footer>
-  </div>
+    <script>
+        // App State
+        const appState = {
+            currentScreen: 'portal',
+            currentTimeline: 0,
+            vantaEffect: null
+        };
 
-  <script src="script.js"></script>
+        // Timeline Data
+        const timelineData = [
+            { 
+                id: 1, 
+                title: "First Connection", 
+                date: "2023-01-15", 
+                era: "golden", 
+                description: "The day our stars first aligned",
+                messages: [
+                    { sender: "You", time: "Jan 15, 2023 · 2:30 PM", text: "Hey! I noticed your profile and thought you seemed really interesting. How's your day going?" },
+                    { sender: "Partner", time: "Jan 15, 2023 · 3:15 PM", text: "Hi! That's so sweet of you to reach out. My day just got a lot better 😊" }
+                ]
+            },
+            { 
+                id: 2, 
+                title: "First Date", 
+                date: "2023-02-20", 
+                era: "golden", 
+                description: "Moonlight and laughter under city lights",
+                messages: [
+                    { sender: "You", time: "Feb 20, 2023 · 9:45 PM", text: "Tonight was amazing. I can't remember the last time I laughed so hard!" },
+                    { sender: "Partner", time: "Feb 20, 2023 · 10:02 PM", text: "Me too! I never wanted it to end. When can I see you again?" }
+                ]
+            },
+            { 
+                id: 3, 
+                title: "First I Love You", 
+                date: "2023-04-10", 
+                era: "starburst", 
+                description: "Three words that changed everything",
+                messages: [
+                    { sender: "You", time: "Apr 10, 2023 · 11:47 PM", text: "I need to tell you something... I love you. I've felt it for a while now." },
+                    { sender: "Partner", time: "Apr 10, 2023 · 11:49 PM", text: "I love you too! I've been wanting to say it but was so nervous ❤️" }
+                ]
+            },
+            { 
+                id: 4, 
+                title: "Summer Adventures", 
+                date: "2023-06-15", 
+                era: "golden", 
+                description: "Endless days and warm memories",
+                messages: [
+                    { sender: "You", time: "Jun 20, 2023 · 3:42 PM", text: "Remember our beach picnic yesterday? I can't stop thinking about how you looked with the sunset behind you." },
+                    { sender: "Partner", time: "Jul 4, 2023 · 11:15 AM", text: "I love you more than yesterday but less than tomorrow ❤️", isHeart: true },
+                    { sender: "You", time: "Jul 15, 2023 · 9:27 PM", text: "Today was perfect. Hiking, finding that hidden waterfall, and just being with you." }
+                ]
+            }
+        ];
+
+        // Initialize Vanta
+        function initVanta(type = 'globe') {
+            if (appState.vantaEffect) {
+                appState.vantaEffect.destroy();
+            }
+            
+            if (type === 'globe') {
+                appState.vantaEffect = VANTA.GLOBE({
+                    el: "#vanta-bg",
+                    mouseControls: true,
+                    touchControls: true,
+                    gyroControls: false,
+                    minHeight: 200.00,
+                    minWidth: 200.00,
+                    scale: 1.00,
+                    scaleMobile: 1.00,
+                    color: 0x3b82f6,
+                    backgroundColor: 0x0,
+                    size: 0.8
+                });
+            }
+        }
+
+        // Screen Navigation
+        function showScreen(screenName) {
+            ['portal-screen', 'timemachine-screen', 'universe-screen', 'forever-screen'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(`${screenName}-screen`).classList.remove('hidden');
+            appState.currentScreen = screenName;
+        }
+
+        // Initialize Timeline
+        function initTimeline() {
+            const timeMachine = document.getElementById('time-machine-dial');
+            timeMachine.innerHTML = '';
+            
+            timelineData.forEach((item, index) => {
+                const angle = (index * (360 / timelineData.length)) * (Math.PI / 180);
+                const radius = 150;
+                const x = radius * Math.cos(angle);
+                const y = radius * Math.sin(angle);
+                
+                const dot = document.createElement('div');
+                dot.className = 'timeline-dot';
+                dot.dataset.id = item.id;
+                dot.style.left = `calc(50% + ${x}px - 8px)`;
+                dot.style.top = `calc(50% + ${y}px - 8px)`;
+                
+                const tooltip = document.createElement('div');
+                tooltip.className = 'absolute -top-10 left-1/2 transform -translate-x-1/2 bg-black/80 px-3 py-1 rounded text-sm whitespace-nowrap pointer-events-none opacity-0 transition-opacity';
+                tooltip.textContent = item.title;
+                dot.appendChild(tooltip);
+                
+                dot.addEventListener('mouseenter', () => {
+                    tooltip.classList.remove('opacity-0');
+                });
+                dot.addEventListener('mouseleave', () => {
+                    tooltip.classList.add('opacity-0');
+                });
+                
+                dot.addEventListener('click', () => selectTimeline(index));
+                
+                timeMachine.appendChild(dot);
+            });
+            
+            selectTimeline(0);
+        }
+
+        // Select Timeline
+        function selectTimeline(index) {
+            appState.currentTimeline = index;
+            const item = timelineData[index];
+            
+            document.getElementById('era-title').textContent = item.title;
+            document.getElementById('era-description').textContent = item.description;
+            
+            const display = document.getElementById('era-display');
+            display.classList.remove('era-golden', 'era-night', 'era-starburst');
+            display.classList.add(`era-${item.era}`);
+            
+            document.querySelectorAll('.timeline-dot').forEach(dot => {
+                dot.classList.remove('active');
+            });
+            document.querySelector(`.timeline-dot[data-id="${item.id}"]`)?.classList.add('active');
+        }
+
+        // Load Universe Messages
+        function loadUniverseMessages() {
+            const item = timelineData[appState.currentTimeline];
+            document.getElementById('universe-title').textContent = item.title;
+            document.getElementById('current-date').textContent = new Date(item.date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            
+            const container = document.getElementById('messages-container');
+            container.innerHTML = '';
+            
+            item.messages.forEach((msg, index) => {
+                const bubble = document.createElement('div');
+                bubble.className = `message-bubble bg-black/40 p-6 rounded-xl ${msg.isHeart ? 'heart-message' : ''}`;
+                
+                const color = msg.sender === "You" ? "blue" : "pink";
+                
+                bubble.innerHTML = `
+                    <div class="flex items-start mb-2">
+                        <div class="w-10 h-10 rounded-full bg-${color}-500 mr-4 flex-shrink-0"></div>
+                        <div>
+                            <h3 class="font-bold text-cyan-200">${msg.sender}</h3>
+                            <p class="text-sm text-gray-400">${msg.time}</p>
+                        </div>
+                    </div>
+                    <div class="pl-14">
+                        <p class="typewriter-text text-lg">${msg.text}</p>
+                    </div>
+                `;
+                
+                container.appendChild(bubble);
+                
+                setTimeout(() => {
+                    gsap.from(bubble, {
+                        opacity: 0,
+                        y: 20,
+                        duration: 0.5,
+                        ease: "power2.out"
+                    });
+                }, index * 200);
+            });
+            
+            createStars();
+        }
+
+        // Create Star Background
+        function createStars() {
+            const starBg = document.getElementById('star-bg');
+            starBg.innerHTML = '';
+            
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 3 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                starBg.appendChild(star);
+            }
+        }
+
+        // Type Letter
+        function typeLetter() {
+            const letterContent = [
+                "As I sit here reflecting on our journey together, I realize this is not an ending but a beautiful beginning.",
+                "Every moment we've shared—from our first nervous hello to the comfortable silences we now cherish—has been a star in the constellation of our love.",
+                "I want you to know that my love for you isn't measured in days or years, but in the infinite ways you've changed my life for the better.",
+                "So here's to our next chapter, wherever it may lead. Because with you, every moment is an adventure I want to experience.",
+                "Forever yours,",
+                "❤️"
+            ];
+            
+            const container = document.getElementById('final-letter');
+            container.innerHTML = '';
+            
+            letterContent.forEach((text, index) => {
+                setTimeout(() => {
+                    const p = document.createElement('p');
+                    p.className = 'mb-4';
+                    p.textContent = text;
+                    container.appendChild(p);
+                    
+                    gsap.from(p, {
+                        opacity: 0,
+                        y: 20,
+                        duration: 0.8,
+                        ease: "power2.out"
+                    });
+                }, index * 1000);
+            });
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            initVanta('globe');
+            
+            // Portal to Time Machine
+            document.getElementById('portal-key').addEventListener('click', () => {
+                gsap.to('#portal-screen', {
+                    opacity: 0,
+                    duration: 1,
+                    onComplete: () => {
+                        showScreen('timemachine');
+                        initTimeline();
+                        gsap.from('#timemachine-screen', { opacity: 0, duration: 1 });
+                    }
+                });
+            });
+            
+            // Back to Portal
+            document.getElementById('back-to-portal').addEventListener('click', () => {
+                gsap.to('#timemachine-screen', {
+                    opacity: 0,
+                    duration: 1,
+                    onComplete: () => {
+                        showScreen('portal');
+                        gsap.from('#portal-screen', { opacity: 0, duration: 1 });
+                    }
+                });
+            });
+            
+            // Start Journey
+            document.getElementById('start-journey-btn').addEventListener('click', () => {
+                gsap.to('#timemachine-screen', {
+                    opacity: 0,
+                    duration: 1,
+                    onComplete: () => {
+                        showScreen('universe');
+                        loadUniverseMessages();
+                        gsap.from('#universe-screen', { opacity: 0, duration: 1 });
+                    }
+                });
+            });
+            
+            // Back to Time Machine
+            document.getElementById('back-to-timemachine').addEventListener('click', () => {
+                gsap.to('#universe-screen', {
+                    opacity: 0,
+                    duration: 1,
+                    onComplete: () => {
+                        showScreen('timemachine');
+                        gsap.from('#timemachine-screen', { opacity: 0, duration: 1 });
+                    }
+                });
+            });
+            
+            // Previous Chapter
+            document.getElementById('prev-chapter').addEventListener('click', () => {
+                if (appState.currentTimeline > 0) {
+                    appState.currentTimeline--;
+                    loadUniverseMessages();
+                }
+            });
+            
+            // Next Chapter
+            document.getElementById('next-chapter').addEventListener('click', () => {
+                if (appState.currentTimeline < timelineData.length - 1) {
+                    appState.currentTimeline++;
+                    loadUniverseMessages();
+                } else {
+                    gsap.to('#universe-screen', {
+                        opacity: 0,
+                        duration: 1,
+                        onComplete: () => {
+                            showScreen('forever');
+                            typeLetter();
+                            gsap.from('#forever-screen', { opacity: 0, duration: 1 });
+                        }
+                    });
+                }
+            });
+            
+            // Restart
+            document.getElementById('restart-btn').addEventListener('click', () => {
+                gsap.to('#forever-screen', {
+                    opacity: 0,
+                    duration: 1,
+                    onComplete: () => {
+                        appState.currentTimeline = 0;
+                        showScreen('portal');
+                        gsap.from('#portal-screen', { opacity: 0, duration: 1 });
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
