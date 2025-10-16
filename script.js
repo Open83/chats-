@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function createStars(count=120){
     stars = [];
     for(let i=0;i<count;i++){
-      stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,z:Math.random()*1.5+0.3,alpha:Math.random()*0.8})
+      stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,z:Math.random()*1.5+0.3,alpha:Math.random()*0.8});
     }
   }
   createStars(140);
@@ -178,57 +178,47 @@ document.addEventListener('DOMContentLoaded', () => {
     autoPlay(sampleData);
   });
 
- async function autoPlay(moments){
-  for(const m of moments){
-    if(!playing) break;
-    selectMoment(m);
-    await waitFor(2200 + m.messages.length * 900);
-    bubble.classList.add('hidden');
-    await waitFor(600);
+  async function autoPlay(moments){
+    for(const m of moments){
+      if(!playing) break;
+      selectMoment(m);
+      await waitFor(2200+m.messages.length*900);
+      bubble.classList.add('hidden');
+      await waitFor(600);
+    }
+    if(playing){
+      finalReveal(sampleData[sampleData.length-1]);
+    }
+    playing=false; playJourney.textContent='Play Journey';
   }
-  if(playing){
-    // final sequence
-    finalReveal(sampleData[sampleData.length-1]);
+
+  function waitFor(ms){return new Promise(r=>setTimeout(r,ms));}
+
+  function finalReveal(finalMoment){
+    experience.querySelectorAll('section').forEach(s=>s.classList.add('hidden'));
+    finalSection.classList.remove('hidden');
+    finalStar.classList.remove('hidden');
+    finalLetter.classList.remove('hidden');
+    finalLetter.textContent='';
+    if(finalMoment.finalLetter){
+      typeWriter(finalMoment.finalLetter,finalLetter);
+    } else {
+      finalLetter.textContent='Our next chapter begins...';
+    }
   }
-  playing=false; playJourney.textContent='Play Journey';
-}
 
-function waitFor(ms){return new Promise(r=>setTimeout(r,ms));}
-
-// Final reveal
-function finalReveal(finalMoment){
-  experience.querySelectorAll('section').forEach(s=>s.classList.add('hidden'));
-  document.getElementById('final').classList.remove('hidden');
-  finalStar.classList.remove('hidden');
-  finalLetter.classList.remove('hidden');
-  finalLetter.textContent = '';
-  // Type final letter if present
-  if(finalMoment.finalLetter){
-    typeWriter(finalMoment.finalLetter, finalLetter);
-  } else {
-    finalLetter.textContent = 'Our next chapter begins...';
-  }
-}
-
-// small utility: create floating particles in #particles
-(function particleGenerator(){
-  const pWrap = document.getElementById('particles');
-  function make(){
-    const el = document.createElement('div');
-    el.className = 'p';
-    const size = Math.random()*6 + 2;
-    Object.assign(el.style,{position:'absolute',left:(Math.random()*100)+'%',top:(Math.random()*100)+'%',width:size+'px',height:size+'px',borderRadius:'50%',background:'rgba(255,255,255,'+ (Math.random()*0.6+0.06) +')',transform:'translate(-50%,-50%)',pointerEvents:'none'});
-    pWrap.appendChild(el);
-    setTimeout(()=>{el.style.transition='transform 6s linear,opacity 6s linear'; el.style.transform='translate(-50%,-700%)'; el.style.opacity='0';},60);
-    setTimeout(()=>{pWrap.removeChild(el)},7000);
-  }
-  setInterval(make,260);
-})();
-
-// tiny helper
-function $(s){return document.querySelector(s)}
-
-// Accessibility: allow Enter key to open
-document.addEventListener('keydown',(e)=>{ if(e.key==='Enter' && !experience.classList.contains('hidden')){ /* no-op */ } });
-
-// END of script.js
+  // Floating particles
+  (function particleGenerator(){
+    const pWrap = document.getElementById('particles');
+    function make(){
+      const el = document.createElement('div');
+      el.className='p';
+      const size=Math.random()*6+2;
+      Object.assign(el.style,{position:'absolute',left:(Math.random()*100)+'%',top:(Math.random()*100)+'%',width:size+'px',height:size+'px',borderRadius:'50%',background:'rgba(255,255,255,'+(Math.random()*0.6+0.06)+')',transform:'translate(-50%,-50%)',pointerEvents:'none'});
+      pWrap.appendChild(el);
+      setTimeout(()=>{el.style.transition='transform 6s linear,opacity 6s linear'; el.style.transform='translate(-50%,-700%)'; el.style.opacity='0';},60);
+      setTimeout(()=>{pWrap.removeChild(el)},7000);
+    }
+    setInterval(make,260);
+  })();
+});
