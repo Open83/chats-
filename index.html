@@ -9,6 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.nebula.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;500;700&display=swap');
         
@@ -101,7 +102,7 @@
 
         @media (max-width: 768px) {
             #vanta-bg {
-                transform: scale(1.3);
+                transform: scale(1.2);
             }
             .text-4xl {
                 font-size: 2rem;
@@ -116,10 +117,10 @@
                 max-width: 90%;
             }
             .w-64 {
-                width: 48%;
+                width: 12rem;
             }
             .h-64 {
-                height: 48%;
+                height: 12rem;
             }
         }
     </style>
@@ -319,23 +320,43 @@
                 appState.vantaEffect.destroy();
             }
             
-            appState.vantaEffect = VANTA.NEBULA({
-                el: "#vanta-bg",
-                mouseControls: true,
-                touchControls: true,
-                gyroControls: false,
-                minHeight: 200.00,
-                minWidth: 200.00,
-                scale: 1.00,
-                scaleMobile: 1.00,
-                color: 0x5eead4,
-                color2: 0xff6b6b,
-                backgroundColor: 0x0,
-                points: 10.00,
-                maxDistance: 20.00,
-                spacing: 15.00,
-                speed: 2.00
-            });
+            try {
+                appState.vantaEffect = VANTA.NEBULA({
+                    el: "#vanta-bg",
+                    mouseControls: true,
+                    touchControls: true,
+                    gyroControls: false,
+                    minHeight: 200.00,
+                    minWidth: 200.00,
+                    scale: 1.00,
+                    scaleMobile: 1.00,
+                    color: 0x5eead4,
+                    color2: 0xff6b6b,
+                    backgroundColor: 0x0,
+                    points: 10.00,
+                    maxDistance: 20.00,
+                    spacing: 15.00,
+                    speed: 2.00
+                });
+                console.log("Vanta NEBULA initialized successfully");
+            } catch (e) {
+                console.error("Failed to initialize NEBULA, falling back to WAVES", e);
+                appState.vantaEffect = VANTA.WAVES({
+                    el: "#vanta-bg",
+                    mouseControls: true,
+                    touchControls: true,
+                    gyroControls: false,
+                    minHeight: 200.00,
+                    minWidth: 200.00,
+                    scale: 1.00,
+                    scaleMobile: 1.00,
+                    color: 0x5eead4,
+                    shininess: 50.00,
+                    waveHeight: 20.00,
+                    waveSpeed: 0.75
+                });
+                console.log("Vanta WAVES initialized as fallback");
+            }
         }
 
         // Screen Navigation
@@ -345,6 +366,7 @@
             });
             document.getElementById(`${screenName}-screen`).classList.remove('hidden');
             appState.currentScreen = screenName;
+            console.log(`Navigated to ${screenName} screen`);
         }
 
         // Initialize Timeline
@@ -400,6 +422,7 @@
                 dot.classList.remove('active');
             });
             document.querySelector(`.timeline-dot[data-id="${item.id}"]`)?.classList.add('active');
+            console.log(`Selected timeline: ${item.title}`);
         }
 
         // Load Universe Messages
@@ -443,6 +466,7 @@
             });
             
             createStars();
+            console.log(`Loaded messages for timeline: ${item.title}`);
         }
 
         // Create Star Background
@@ -501,6 +525,7 @@
             
             // Portal to Time Machine
             document.getElementById('portal-key').addEventListener('click', () => {
+                console.log("Portal key clicked, navigating to timemachine");
                 gsap.to('#portal-screen', {
                     opacity: 0,
                     duration: 1,
@@ -514,6 +539,7 @@
             
             // Back to Portal
             document.getElementById('back-to-portal').addEventListener('click', () => {
+                console.log("Back to portal clicked");
                 gsap.to('#timemachine-screen', {
                     opacity: 0,
                     duration: 1,
@@ -526,12 +552,13 @@
             
             // Start Journey
             document.getElementById('start-journey-btn').addEventListener('click', () => {
+                console.log("Start Journey clicked, loading first chapter");
                 gsap.to('#timemachine-screen', {
                     opacity: 0,
                     duration: 1,
                     onComplete: () => {
                         showScreen('universe');
-                        appState.currentTimeline = 0; // Start from the first chapter
+                        appState.currentTimeline = 0; // Ensure first chapter
                         loadUniverseMessages();
                         gsap.from('#universe-screen', { opacity: 0, duration: 1 });
                     }
@@ -540,6 +567,7 @@
             
             // Back to Time Machine
             document.getElementById('back-to-timemachine').addEventListener('click', () => {
+                console.log("Back to timemachine clicked");
                 gsap.to('#universe-screen', {
                     opacity: 0,
                     duration: 1,
@@ -555,6 +583,7 @@
                 if (appState.currentTimeline > 0) {
                     appState.currentTimeline--;
                     loadUniverseMessages();
+                    console.log(`Navigated to previous chapter: ${timelineData[appState.currentTimeline].title}`);
                 }
             });
             
@@ -563,7 +592,9 @@
                 if (appState.currentTimeline < timelineData.length - 1) {
                     appState.currentTimeline++;
                     loadUniverseMessages();
+                    console.log(`Navigated to next chapter: ${timelineData[appState.currentTimeline].title}`);
                 } else {
+                    console.log("Navigating to forever screen");
                     gsap.to('#universe-screen', {
                         opacity: 0,
                         duration: 1,
@@ -578,6 +609,7 @@
             
             // Restart
             document.getElementById('restart-btn').addEventListener('click', () => {
+                console.log("Restart button clicked, returning to portal");
                 gsap.to('#forever-screen', {
                     opacity: 0,
                     duration: 1,
