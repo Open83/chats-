@@ -624,9 +624,9 @@
                 });
             });
             
-            // Start Journey - FIXED: No page refresh
+            // Start Journey - No page refresh
             document.getElementById('start-journey-btn').addEventListener('click', (e) => {
-                e.preventDefault(); // Prevent any default behavior
+                e.preventDefault();
                 gsap.to('#timemachine-screen', {
                     opacity: 0,
                     duration: 1,
@@ -676,17 +676,9 @@
                 }
             });
             
-            // Restart
+            // Restart - THIS WILL REFRESH THE PAGE
             document.getElementById('restart-btn').addEventListener('click', () => {
-                gsap.to('#forever-screen', {
-                    opacity: 0,
-                    duration: 1,
-                    onComplete: () => {
-                        appState.currentTimeline = 0;
-                        showScreen('portal');
-                        gsap.from('#portal-screen', { opacity: 0, duration: 1 });
-                    }
-                });
+                location.reload();
             });
         });
     </script>
