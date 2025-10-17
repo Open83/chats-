@@ -7,28 +7,155 @@
     <link rel="icon" type="image/x-icon" href="https://static.photos/blue/200x200/42">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.nebula.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;500;700&display=swap');
         
         body {
             font-family: 'Poppins', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
         }
         
         .font-serif {
             font-family: 'Playfair Display', serif;
         }
         
-        .portal-glow {
-            box-shadow: 0 0 60px rgba(94, 234, 212, 0.7);
-            animation: pulse 3s infinite;
+        /* Premium Animated Background */
+        .premium-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #0a0015, #1a0033, #0f0020, #1e0040);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            z-index: 0;
         }
         
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 60px rgba(94, 234, 212, 0.7); }
-            50% { box-shadow: 0 0 100px rgba(94, 234, 212, 0.9); }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Floating Particles */
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(94,234,212,0.8) 0%, rgba(94,234,212,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float linear infinite;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        /* Aurora Effect */
+        .aurora {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.3;
+        }
+        
+        .aurora::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(ellipse at 20% 30%, rgba(94,234,212,0.4) 0%, transparent 40%),
+                radial-gradient(ellipse at 80% 70%, rgba(139,92,246,0.4) 0%, transparent 40%),
+                radial-gradient(ellipse at 50% 50%, rgba(236,72,153,0.3) 0%, transparent 40%);
+            animation: auroraMove 20s ease-in-out infinite;
+        }
+        
+        @keyframes auroraMove {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(-10%, 10%) rotate(5deg); }
+            50% { transform: translate(-5%, -5%) rotate(-5deg); }
+            75% { transform: translate(10%, -10%) rotate(3deg); }
+        }
+        
+        /* Shooting Stars */
+        .shooting-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            box-shadow: 0 0 4px 2px rgba(255,255,255,0.8);
+            animation: shoot 3s linear infinite;
+        }
+        
+        @keyframes shoot {
+            0% {
+                transform: translateX(0) translateY(0);
+                opacity: 1;
+            }
+            70% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(-300px) translateY(300px);
+                opacity: 0;
+            }
+        }
+        
+        /* Twinkling Stars */
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        .portal-glow {
+            box-shadow: 
+                0 0 60px rgba(94, 234, 212, 0.7),
+                0 0 100px rgba(139, 92, 246, 0.5),
+                inset 0 0 60px rgba(94, 234, 212, 0.3);
+            animation: portalPulse 3s infinite;
+        }
+        
+        @keyframes portalPulse {
+            0%, 100% { 
+                box-shadow: 
+                    0 0 60px rgba(94, 234, 212, 0.7),
+                    0 0 100px rgba(139, 92, 246, 0.5),
+                    inset 0 0 60px rgba(94, 234, 212, 0.3);
+            }
+            50% { 
+                box-shadow: 
+                    0 0 100px rgba(94, 234, 212, 0.9),
+                    0 0 150px rgba(139, 92, 246, 0.7),
+                    inset 0 0 80px rgba(94, 234, 212, 0.5);
+            }
         }
         
         .timeline-dot {
@@ -52,13 +179,6 @@
             box-shadow: 0 0 30px rgba(94, 234, 212, 1);
         }
         
-        .timeline-connector {
-            position: absolute;
-            height: 2px;
-            background: linear-gradient(90deg, rgba(94,234,212,0.8) 0%, rgba(59,130,246,0.8) 100%);
-            transform-origin: left center;
-        }
-        
         .message-bubble {
             backdrop-filter: blur(10px);
             border: 1px solid rgba(94, 234, 212, 0.3);
@@ -70,75 +190,58 @@
             box-shadow: 0 10px 25px rgba(94, 234, 212, 0.3);
         }
         
-        .heart-message {
-            position: relative;
+        .era-golden { 
+            background: linear-gradient(135deg, rgba(245,158,11,0.15) 0%, rgba(217,119,6,0.25) 100%);
+            box-shadow: 0 0 40px rgba(245,158,11,0.2);
         }
-        
-        .star {
-            position: absolute;
-            background-color: white;
-            border-radius: 50%;
-            animation: twinkle var(--duration) infinite ease-in-out;
+        .era-night { 
+            background: linear-gradient(135deg, rgba(30,58,138,0.15) 0%, rgba(30,64,175,0.25) 100%);
+            box-shadow: 0 0 40px rgba(30,58,138,0.2);
         }
-        
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 1; }
-        }
-        
-        .typewriter-text {
-            overflow: hidden;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+        .era-starburst { 
+            background: linear-gradient(135deg, rgba(236,72,153,0.15) 0%, rgba(219,39,119,0.25) 100%);
+            box-shadow: 0 0 40px rgba(236,72,153,0.2);
         }
         
         .hidden {
-            display: none;
+            display: none !important;
         }
         
-        .era-golden { background: linear-gradient(135deg, rgba(245,158,11,0.1) 0%, rgba(217,119,6,0.2) 100%); }
-        .era-night { background: linear-gradient(135deg, rgba(30,58,138,0.1) 0%, rgba(30,64,175,0.2) 100%); }
-        .era-starburst { background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(226,232,240,0.2) 100%); }
+        /* Glass morphism effect */
+        .glass {
+            backdrop-filter: blur(20px) saturate(180%);
+            background: rgba(10, 0, 21, 0.6);
+            border: 1px solid rgba(94, 234, 212, 0.2);
+        }
 
         @media (max-width: 768px) {
-            #vanta-bg {
-                transform: scale(1.2);
-            }
-            .text-4xl {
-                font-size: 2rem;
-            }
-            .text-6xl {
-                font-size: 3rem;
-            }
-            .text-xl {
-                font-size: 1.125rem;
-            }
-            .max-w-4xl {
-                max-width: 90%;
-            }
-            .w-64 {
-                width: 12rem;
-            }
-            .h-64 {
-                height: 12rem;
-            }
+            .text-4xl { font-size: 2rem; }
+            .text-6xl { font-size: 3rem; }
+            .text-xl { font-size: 1.125rem; }
+            .max-w-4xl { max-width: 90%; }
+            .w-64 { width: 12rem; }
+            .h-64 { height: 12rem; }
         }
     </style>
 </head>
-<body class="bg-black text-white overflow-x-hidden">
-    <!-- Vanta.js Background -->
-    <div id="vanta-bg" class="fixed top-0 left-0 w-full h-full z-0"></div>
+<body class="bg-black text-white">
+    <!-- Premium Background Effects -->
+    <div class="premium-bg"></div>
+    <div class="aurora"></div>
+    <div id="particles-container"></div>
+    <div id="shooting-stars-container"></div>
+    <div id="stars-container"></div>
 
     <!-- Main Container -->
     <div id="app" class="relative z-10">
         <!-- Portal Screen -->
         <div id="portal-screen" class="min-h-screen flex flex-col items-center justify-center p-4">
-            <div class="max-w-4xl mx-auto text-center px-6 py-12 backdrop-blur-sm bg-black/30 rounded-xl border border-cyan-500/20">
+            <div class="max-w-4xl mx-auto text-center px-6 py-12 glass rounded-xl">
                 <h1 class="text-4xl md:text-6xl font-serif mb-6 text-cyan-300">LoveTime Galaxia</h1>
                 <p class="text-xl md:text-2xl mb-8 font-light text-cyan-100">A cosmic journey through our love story</p>
                 
                 <div class="my-12 flex justify-center">
-                    <div id="portal-key" class="portal-glow w-64 h-64 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center cursor-pointer transform transition-all hover:scale-105">
+                    <div id="portal-key" class="portal-glow w-64 h-64 rounded-full bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center cursor-pointer transform transition-all hover:scale-105">
                         <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-bounce">
                             <path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"></path>
                             <path d="m21 2-9.6 9.6"></path>
@@ -154,7 +257,7 @@
 
         <!-- Time Machine Screen -->
         <div id="timemachine-screen" class="hidden min-h-screen p-4 pt-20">
-            <nav class="fixed top-0 left-0 w-full z-50 p-4 backdrop-blur-sm bg-black/30 border-b border-cyan-500/20">
+            <nav class="fixed top-0 left-0 w-full z-50 p-4 glass border-b border-cyan-500/20">
                 <div class="container mx-auto flex justify-between items-center">
                     <button id="back-to-portal" class="text-cyan-300 hover:text-cyan-100 transition-colors flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
@@ -178,7 +281,7 @@
                     </div>
                 </div>
 
-                <div id="era-display" class="w-full max-w-2xl p-8 rounded-xl backdrop-blur-sm border border-cyan-500/20 transition-all duration-1000">
+                <div id="era-display" class="w-full max-w-2xl p-8 rounded-xl glass transition-all duration-1000">
                     <h3 class="text-2xl md:text-3xl font-serif mb-4 text-cyan-300" id="era-title">Select a moment in time</h3>
                     <p class="text-gray-300" id="era-description">Click on any glowing dot to relive that chapter of our story</p>
                     <div class="mt-6 flex justify-center">
@@ -195,9 +298,7 @@
 
         <!-- Universe Screen -->
         <div id="universe-screen" class="hidden min-h-screen">
-            <div id="star-bg" class="fixed top-0 left-0 w-full h-full z-0"></div>
-            
-            <nav class="fixed top-0 left-0 w-full z-50 p-4 backdrop-blur-sm bg-black/30 border-b border-cyan-500/20 flex justify-between">
+            <nav class="fixed top-0 left-0 w-full z-50 p-4 glass border-b border-cyan-500/20 flex justify-between">
                 <button id="back-to-timemachine" class="text-cyan-300 hover:text-cyan-100 transition-colors flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
                         <polyline points="15 18 9 12 15 6"></polyline>
@@ -240,14 +341,14 @@
 
         <!-- Forever Screen -->
         <div id="forever-screen" class="hidden min-h-screen flex flex-col items-center justify-center p-4 text-center">
-            <div class="max-w-2xl mx-auto backdrop-blur-sm bg-black/30 p-8 md:p-12 rounded-xl border border-cyan-500/20 mb-12">
+            <div class="max-w-2xl mx-auto glass p-8 md:p-12 rounded-xl mb-12">
                 <h1 class="text-3xl md:text-5xl font-serif mb-8 text-cyan-300">Dear Love,</h1>
                 <div id="final-letter" class="text-lg md:text-xl leading-relaxed text-left space-y-6">
                     <!-- Letter content will be typed out -->
                 </div>
             </div>
 
-            <button id="restart-btn" class="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 rounded-full text-xl font-medium flex items-center transition-all transform hover:scale-105 shadow-lg shadow-cyan-500/20">
+            <button id="restart-btn" class="px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 rounded-full text-xl font-medium flex items-center transition-all transform hover:scale-105 shadow-lg shadow-cyan-500/20">
                 Begin Our Next Chapter
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-3">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -261,8 +362,7 @@
         // App State
         const appState = {
             currentScreen: 'portal',
-            currentTimeline: 0,
-            vantaEffect: null
+            currentTimeline: 0
         };
 
         // Timeline Data
@@ -308,54 +408,54 @@
                 description: "Endless days and warm memories",
                 messages: [
                     { sender: "You", time: "Jun 20, 2023 · 3:42 PM", text: "Remember our beach picnic yesterday? I can't stop thinking about how you looked with the sunset behind you." },
-                    { sender: "Partner", time: "Jul 4, 2023 · 11:15 AM", text: "I love you more than yesterday but less than tomorrow ❤️", isHeart: true },
+                    { sender: "Partner", time: "Jul 4, 2023 · 11:15 AM", text: "I love you more than yesterday but less than tomorrow ❤️" },
                     { sender: "You", time: "Jul 15, 2023 · 9:27 PM", text: "Today was perfect. Hiking, finding that hidden waterfall, and just being with you." }
                 ]
             }
         ];
 
-        // Initialize Vanta
-        function initVanta() {
-            if (appState.vantaEffect) {
-                appState.vantaEffect.destroy();
+        // Initialize Premium Background Effects
+        function initPremiumBackground() {
+            // Create floating particles
+            const particlesContainer = document.getElementById('particles-container');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 6 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                particlesContainer.appendChild(particle);
             }
-            
-            try {
-                appState.vantaEffect = VANTA.NEBULA({
-                    el: "#vanta-bg",
-                    mouseControls: true,
-                    touchControls: true,
-                    gyroControls: false,
-                    minHeight: 200.00,
-                    minWidth: 200.00,
-                    scale: 1.00,
-                    scaleMobile: 1.00,
-                    color: 0x5eead4,
-                    color2: 0xff6b6b,
-                    backgroundColor: 0x0,
-                    points: 10.00,
-                    maxDistance: 20.00,
-                    spacing: 15.00,
-                    speed: 2.00
-                });
-                console.log("Vanta NEBULA initialized successfully");
-            } catch (e) {
-                console.error("Failed to initialize NEBULA, falling back to WAVES", e);
-                appState.vantaEffect = VANTA.WAVES({
-                    el: "#vanta-bg",
-                    mouseControls: true,
-                    touchControls: true,
-                    gyroControls: false,
-                    minHeight: 200.00,
-                    minWidth: 200.00,
-                    scale: 1.00,
-                    scaleMobile: 1.00,
-                    color: 0x5eead4,
-                    shininess: 50.00,
-                    waveHeight: 20.00,
-                    waveSpeed: 0.75
-                });
-                console.log("Vanta WAVES initialized as fallback");
+
+            // Create shooting stars
+            const shootingStarsContainer = document.getElementById('shooting-stars-container');
+            setInterval(() => {
+                const star = document.createElement('div');
+                star.className = 'shooting-star';
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 50}%`;
+                shootingStarsContainer.appendChild(star);
+                setTimeout(() => star.remove(), 3000);
+            }, 3000);
+
+            // Create twinkling stars
+            const starsContainer = document.getElementById('stars-container');
+            for (let i = 0; i < 150; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 2.5 + 0.5;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                star.style.position = 'fixed';
+                star.style.zIndex = '1';
+                starsContainer.appendChild(star);
             }
         }
 
@@ -366,7 +466,6 @@
             });
             document.getElementById(`${screenName}-screen`).classList.remove('hidden');
             appState.currentScreen = screenName;
-            console.log(`Navigated to ${screenName} screen`);
         }
 
         // Initialize Timeline
@@ -422,7 +521,6 @@
                 dot.classList.remove('active');
             });
             document.querySelector(`.timeline-dot[data-id="${item.id}"]`)?.classList.add('active');
-            console.log(`Selected timeline: ${item.title}`);
         }
 
         // Load Universe Messages
@@ -436,7 +534,7 @@
             
             item.messages.forEach((msg, index) => {
                 const bubble = document.createElement('div');
-                bubble.className = `message-bubble bg-black/40 p-6 rounded-xl ${msg.isHeart ? 'heart-message' : ''}`;
+                bubble.className = 'message-bubble bg-black/40 p-6 rounded-xl';
                 
                 const color = msg.sender === "You" ? "blue" : "pink";
                 
@@ -449,7 +547,7 @@
                         </div>
                     </div>
                     <div class="pl-14">
-                        <p class="typewriter-text text-lg">${msg.text}</p>
+                        <p class="text-lg">${msg.text}</p>
                     </div>
                 `;
                 
@@ -464,28 +562,6 @@
                     });
                 }, index * 200);
             });
-            
-            createStars();
-            console.log(`Loaded messages for timeline: ${item.title}`);
-        }
-
-        // Create Star Background
-        function createStars() {
-            const starBg = document.getElementById('star-bg');
-            starBg.innerHTML = '';
-            
-            for (let i = 0; i < 200; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                const size = Math.random() * 3 + 1;
-                star.style.width = `${size}px`;
-                star.style.height = `${size}px`;
-                star.style.left = `${Math.random() * 100}%`;
-                star.style.top = `${Math.random() * 100}%`;
-                star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
-                star.style.animationDelay = `${Math.random() * 5}s`;
-                starBg.appendChild(star);
-            }
         }
 
         // Type Letter
@@ -521,11 +597,10 @@
 
         // Event Listeners
         document.addEventListener('DOMContentLoaded', () => {
-            initVanta();
+            initPremiumBackground();
             
             // Portal to Time Machine
             document.getElementById('portal-key').addEventListener('click', () => {
-                console.log("Portal key clicked, navigating to timemachine");
                 gsap.to('#portal-screen', {
                     opacity: 0,
                     duration: 1,
@@ -539,7 +614,6 @@
             
             // Back to Portal
             document.getElementById('back-to-portal').addEventListener('click', () => {
-                console.log("Back to portal clicked");
                 gsap.to('#timemachine-screen', {
                     opacity: 0,
                     duration: 1,
@@ -550,15 +624,14 @@
                 });
             });
             
-            // Start Journey
-            document.getElementById('start-journey-btn').addEventListener('click', () => {
-                console.log("Start Journey clicked, loading first chapter");
+            // Start Journey - FIXED: No page refresh
+            document.getElementById('start-journey-btn').addEventListener('click', (e) => {
+                e.preventDefault(); // Prevent any default behavior
                 gsap.to('#timemachine-screen', {
                     opacity: 0,
                     duration: 1,
                     onComplete: () => {
                         showScreen('universe');
-                        appState.currentTimeline = 0; // Ensure first chapter
                         loadUniverseMessages();
                         gsap.from('#universe-screen', { opacity: 0, duration: 1 });
                     }
@@ -567,7 +640,6 @@
             
             // Back to Time Machine
             document.getElementById('back-to-timemachine').addEventListener('click', () => {
-                console.log("Back to timemachine clicked");
                 gsap.to('#universe-screen', {
                     opacity: 0,
                     duration: 1,
@@ -583,7 +655,6 @@
                 if (appState.currentTimeline > 0) {
                     appState.currentTimeline--;
                     loadUniverseMessages();
-                    console.log(`Navigated to previous chapter: ${timelineData[appState.currentTimeline].title}`);
                 }
             });
             
@@ -592,9 +663,7 @@
                 if (appState.currentTimeline < timelineData.length - 1) {
                     appState.currentTimeline++;
                     loadUniverseMessages();
-                    console.log(`Navigated to next chapter: ${timelineData[appState.currentTimeline].title}`);
                 } else {
-                    console.log("Navigating to forever screen");
                     gsap.to('#universe-screen', {
                         opacity: 0,
                         duration: 1,
@@ -609,7 +678,6 @@
             
             // Restart
             document.getElementById('restart-btn').addEventListener('click', () => {
-                console.log("Restart button clicked, returning to portal");
                 gsap.to('#forever-screen', {
                     opacity: 0,
                     duration: 1,
