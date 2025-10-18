@@ -40,6 +40,9 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.5s ease;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 20px;
         }
 
         .scene.active {
@@ -64,6 +67,7 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
+            font-size: 1.5rem;
         }
 
         #audioToggle:hover {
@@ -118,6 +122,7 @@
             font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.3s ease;
+            border: none;
         }
 
         .btn:hover {
@@ -152,6 +157,14 @@
 
         /* Universe Scene */
         #universe-scene {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .universe-container {
+            position: relative;
             width: 100%;
             height: 100%;
         }
@@ -192,9 +205,8 @@
             animation: float 3s ease-in-out infinite;
         }
 
-        .planet:hover {
-            transform: scale(1.2);
-            border-color: rgba(255, 255, 255, 0.5);
+        .planet:active {
+            transform: scale(0.95);
         }
 
         .planet-label {
@@ -206,6 +218,7 @@
             white-space: nowrap;
             opacity: 0;
             transition: opacity 0.3s ease;
+            pointer-events: none;
         }
 
         .planet:hover .planet-label {
@@ -224,10 +237,11 @@
             cursor: pointer;
             animation: pulse-glow 2s ease-in-out infinite;
             transition: all 0.3s ease;
+            z-index: 4;
         }
 
-        .eternal-star:hover {
-            transform: scale(1.1);
+        .eternal-star:active {
+            transform: scale(0.95);
         }
 
         .eternal-label {
@@ -237,6 +251,7 @@
             transform: translateX(-50%);
             font-size: 1rem;
             white-space: nowrap;
+            pointer-events: none;
         }
 
         .instruction {
@@ -247,6 +262,8 @@
             color: rgba(255, 255, 255, 0.6);
             font-size: 1rem;
             text-align: center;
+            width: 90%;
+            max-width: 400px;
         }
 
         /* Planet Modal */
@@ -263,6 +280,7 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            overflow-y: auto;
         }
 
         #planet-modal.show {
@@ -280,6 +298,9 @@
             width: 100%;
             text-align: center;
             animation: scale-in 0.3s ease-out;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: auto;
         }
 
         .modal-planet {
@@ -288,6 +309,7 @@
             border-radius: 50%;
             margin: 0 auto 30px;
             animation: pulse-glow 2s ease-in-out infinite;
+            flex-shrink: 0;
         }
 
         .modal-content h2 {
@@ -315,6 +337,19 @@
             text-align: center;
             padding: 20px;
             max-width: 900px;
+            width: 100%;
+            margin: auto;
+            overflow-y: auto;
+            display: block;
+        }
+
+        #final-scene > div {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
         }
 
         .heart-container {
@@ -322,6 +357,7 @@
             width: 200px;
             height: 200px;
             margin: 0 auto 40px;
+            flex-shrink: 0;
         }
 
         .heart {
@@ -367,6 +403,8 @@
             padding: 40px;
             margin-bottom: 30px;
             animation: fade-in-up 1s ease-out 1s backwards;
+            max-height: 60vh;
+            overflow-y: auto;
         }
 
         .final-message p {
@@ -374,6 +412,10 @@
             line-height: 1.8;
             margin-bottom: 20px;
             color: rgba(255, 255, 255, 0.9);
+        }
+
+        .final-message p:last-child {
+            margin-bottom: 0;
         }
 
         .final-message .signature {
@@ -384,6 +426,27 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-top: 30px;
+        }
+
+        /* Scrollbar Styling */
+        .final-message::-webkit-scrollbar,
+        .modal-content::-webkit-scrollbar,
+        #final-scene::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .final-message::-webkit-scrollbar-track,
+        .modal-content::-webkit-scrollbar-track,
+        #final-scene::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .final-message::-webkit-scrollbar-thumb,
+        .modal-content::-webkit-scrollbar-thumb,
+        #final-scene::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
         }
 
         /* Animations */
@@ -445,16 +508,88 @@
             #birth-scene h1 { font-size: 2rem; }
             .center-star { width: 150px; height: 150px; }
             .sun { width: 80px; height: 80px; }
-            .planet { width: 60px; height: 60px; }
-            .eternal-star { width: 80px; height: 80px; }
-            .modal-content { padding: 30px 20px; }
+            .sun-label { transform: translate(-50%, 100px); }
+            
+            .planet { 
+                width: 70px; 
+                height: 70px;
+                border-width: 3px;
+            }
+            
+            .eternal-star { 
+                width: 90px; 
+                height: 90px;
+                top: 10%;
+                right: 5%;
+            }
+            
+            .eternal-label {
+                font-size: 0.9rem;
+                bottom: -30px;
+            }
+            
+            .modal-content { 
+                padding: 30px 20px;
+                border-radius: 20px;
+            }
+            
             .modal-content h2 { font-size: 1.8rem; }
             .modal-content .message { font-size: 1rem; }
-            #final-scene h1 { font-size: 1.8rem; }
-            #final-scene h2 { font-size: 2rem; }
-            .final-message { padding: 30px 20px; }
-            .final-message p { font-size: 1rem; }
-            .heart-container { width: 150px; height: 150px; }
+            .modal-content .memory { font-size: 0.9rem; }
+            
+            #final-scene h1 { 
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+            }
+            
+            #final-scene h2 { 
+                font-size: 2rem;
+                margin-bottom: 30px;
+            }
+            
+            .final-message { 
+                padding: 25px 20px;
+                border-radius: 20px;
+                max-height: 50vh;
+            }
+            
+            .final-message p { 
+                font-size: 1rem;
+                margin-bottom: 15px;
+            }
+            
+            .final-message .signature {
+                font-size: 1.2rem;
+                margin-top: 20px;
+            }
+            
+            .heart-container { 
+                width: 120px; 
+                height: 120px;
+                margin-bottom: 30px;
+            }
+            
+            .instruction {
+                font-size: 0.9rem;
+                bottom: 20px;
+            }
+
+            .btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .planet {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .eternal-star {
+                width: 75px;
+                height: 75px;
+            }
         }
     </style>
 </head>
@@ -484,18 +619,20 @@
 
     <!-- Universe Scene -->
     <div id="universe-scene" class="scene">
-        <div class="sun"></div>
-        <div class="sun-label">You</div>
-        
-        <!-- Planets (will be generated by JS) -->
-        <div id="planetsContainer"></div>
-        
-        <!-- Eternal Star -->
-        <div class="eternal-star" onclick="goToFinal()">
-            <div class="eternal-label">✨ Eternal Star</div>
+        <div class="universe-container">
+            <div class="sun"></div>
+            <div class="sun-label">You</div>
+            
+            <!-- Planets (will be generated by JS) -->
+            <div id="planetsContainer"></div>
+            
+            <!-- Eternal Star -->
+            <div class="eternal-star" onclick="goToFinal()">
+                <div class="eternal-label">✨ Eternal Star</div>
+            </div>
+            
+            <div class="instruction">Touch the planets to explore our story</div>
         </div>
-        
-        <div class="instruction">Touch the planets to explore our story</div>
     </div>
 
     <!-- Planet Modal -->
@@ -526,7 +663,10 @@
                 <p>I built this universe not because I love space... but because you made my world infinite.</p>
                 <p>Every star here is a heartbeat. Every planet is a memory.</p>
                 <p>And at the center of it all... is you.</p>
-                <p class="signature">My sun. My forever. ☀️</p>
+                <p>You changed everything. Before you, I was wandering through life without direction. Now, every path leads to you.</p>
+                <p>In your eyes, I found home. In your smile, I found peace. In your love, I found myself.</p>
+                <p>This universe I built for you will expand forever, just like my love for you grows with every passing moment.</p>
+                <p class="signature">My sun. My forever. My everything. ☀️💫</p>
             </div>
             <button class="btn" onclick="replay()">🔄 Orbit Forever</button>
         </div>
@@ -542,7 +682,7 @@
                 x: 30,
                 y: 25,
                 message: 'The moment our eyes met, time stopped. It was just you and me in a crowded world.',
-                memory: 'Remember how nervous I was? Your smile made everything feel right.'
+                memory: 'Remember how nervous I was? Your smile made everything feel right. That day, I knew my life would never be the same.'
             },
             {
                 id: 'moments',
@@ -551,7 +691,7 @@
                 x: 70,
                 y: 35,
                 message: 'Every laugh, every adventure, every quiet moment. They all led me deeper into you.',
-                memory: 'From midnight talks to silly fights, every second with you is my favorite story.'
+                memory: 'From midnight talks to silly fights, every second with you is my favorite story. Even the hard times brought us closer, making us stronger together.'
             },
             {
                 id: 'dreams',
@@ -560,7 +700,7 @@
                 x: 50,
                 y: 70,
                 message: 'I see us traveling the world, building a home, creating a life that feels like forever.',
-                memory: 'Every dream I have now has you in it. You\'re my future.'
+                memory: 'Every dream I have now has you in it. You\'re my future. Together, we\'ll write the most beautiful story ever told.'
             },
             {
                 id: 'my-world',
@@ -569,7 +709,7 @@
                 x: 20,
                 y: 60,
                 message: 'You\'re not just in my life. You ARE my life. My reason, my peace, my everything.',
-                memory: 'Before you, I was existing. With you, I\'m alive.'
+                memory: 'Before you, I was existing. With you, I\'m alive. You showed me what it means to truly love and be loved.'
             }
         ];
 
@@ -578,6 +718,7 @@
         let audioEnabled = false;
         let heartbeatInterval;
         let animationFrame;
+        let audioContext;
 
         // Canvas setup
         const canvas = document.getElementById('canvas');
@@ -664,6 +805,13 @@
             if (sceneName !== 'void') {
                 document.getElementById('audioToggle').classList.add('show');
             }
+
+            // Scroll to top when changing scenes
+            if (sceneName === 'final') {
+                setTimeout(() => {
+                    document.getElementById('final-scene').scrollTop = 0;
+                }, 100);
+            }
         }
 
         function startJourney() {
@@ -686,6 +834,12 @@
             document.getElementById('modalMessage').textContent = planet.message;
             document.getElementById('modalMemory').textContent = planet.memory;
             modal.classList.add('show');
+            
+            // Scroll modal to top
+            setTimeout(() => {
+                const modalContent = document.querySelector('.modal-content');
+                modalContent.scrollTop = 0;
+            }, 50);
         }
 
         function closeModal() {
@@ -702,29 +856,61 @@
             birthStar.classList.remove('burst');
         }
 
-        // Audio
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        // Enhanced Audio with louder volume
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
 
         function playHeartbeat() {
-            const osc = audioContext.createOscillator();
-            const gain = audioContext.createGain();
+            if (!audioContext) return;
             
-            osc.connect(gain);
-            gain.connect(audioContext.destination);
+            // First beat (louder)
+            const osc1 = audioContext.createOscillator();
+            const gain1 = audioContext.createGain();
             
-            osc.frequency.value = 55;
-            gain.gain.setValueAtTime(0.1, audioContext.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            osc1.connect(gain1);
+            gain1.connect(audioContext.destination);
             
-            osc.start(audioContext.currentTime);
-            osc.stop(audioContext.currentTime + 0.5);
+            osc1.frequency.value = 80;
+            gain1.gain.setValueAtTime(0.4, audioContext.currentTime); // Increased from 0.1 to 0.4
+            gain1.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            osc1.start(audioContext.currentTime);
+            osc1.stop(audioContext.currentTime + 0.3);
+
+            // Second beat (slightly quieter)
+            setTimeout(() => {
+                const osc2 = audioContext.createOscillator();
+                const gain2 = audioContext.createGain();
+                
+                osc2.connect(gain2);
+                gain2.connect(audioContext.destination);
+                
+                osc2.frequency.value = 70;
+                gain2.gain.setValueAtTime(0.3, audioContext.currentTime); // Increased from 0.08 to 0.3
+                gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.25);
+                
+                osc2.start(audioContext.currentTime);
+                osc2.stop(audioContext.currentTime + 0.25);
+            }, 200);
         }
 
         document.getElementById('audioToggle').addEventListener('click', function() {
+            if (!audioContext) {
+                initAudio();
+            }
+
             audioEnabled = !audioEnabled;
             this.textContent = audioEnabled ? '🔊' : '🔇';
 
             if (audioEnabled) {
+                // Resume audio context if suspended (required for mobile)
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+
                 heartbeatInterval = setInterval(() => {
                     if (currentScene === 'universe' || currentScene === 'final') {
                         playHeartbeat();
@@ -733,6 +919,30 @@
             } else {
                 clearInterval(heartbeatInterval);
             }
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('planet-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Prevent body scroll when modal is open
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                const modal = document.getElementById('planet-modal');
+                if (modal.classList.contains('show')) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        observer.observe(document.getElementById('planet-modal'), {
+            attributes: true,
+            attributeFilter: ['class']
         });
     </script>
 </body>
