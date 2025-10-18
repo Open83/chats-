@@ -301,8 +301,6 @@
             max-height: 90vh;
             overflow-y: auto;
             margin: auto;
-            display: flex;
-            flex-direction: column;
         }
 
         .modal-planet {
@@ -325,9 +323,6 @@
             line-height: 1.8;
             margin-bottom: 20px;
             color: rgba(255, 255, 255, 0.9);
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            text-align: left;
         }
 
         .modal-content .memory {
@@ -354,7 +349,8 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 40px 20px;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         .heart-container {
@@ -405,20 +401,21 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 30px;
-            padding: 40px;
+            padding: 30px;
             margin-bottom: 30px;
             animation: fade-in-up 1s ease-out 1s backwards;
             max-height: 60vh;
             overflow-y: auto;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: left;
         }
 
         .final-message p {
             font-size: 1.2rem;
-            line-height: 1.8;
-            margin-bottom: 20px;
+            line-height: 1.6;
+            margin-bottom: 15px;
             color: rgba(255, 255, 255, 0.9);
-            text-align: left;
-            white-space: pre-wrap;
             word-wrap: break-word;
         }
 
@@ -434,6 +431,7 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-top: 30px;
+            text-align: center;
         }
 
         /* Scrollbar Styling */
@@ -537,78 +535,68 @@
             }
             
             .modal-content { 
-                padding: 25px 15px;
+                padding: 20px;
                 border-radius: 20px;
-                max-height: 85vh;
+                max-height: 80vh;
             }
             
-            .modal-content h2 { 
-                font-size: 1.6rem;
-                margin-bottom: 15px;
+            .modal-content h2 { font-size: 1.8rem; }
+            .modal-content .message { font-size: 1rem; }
+            .modal-content .memory { font-size: 0.9rem; }
+            
+            #final-scene {
+                padding: 10px;
             }
             
-            .modal-content .message { 
-                font-size: 0.95rem;
-                line-height: 1.7;
-                margin-bottom: 15px;
-            }
-            
-            .modal-content .memory { 
-                font-size: 0.85rem;
-                margin-bottom: 20px;
-            }
-
-            .modal-planet {
-                width: 80px;
-                height: 80px;
-                margin-bottom: 20px;
+            #final-scene > div {
+                min-height: auto;
+                padding: 15px;
+                justify-content: flex-start;
             }
             
             #final-scene h1 { 
-                font-size: 1.4rem;
+                font-size: 1.5rem;
                 margin-bottom: 20px;
-                line-height: 1.4;
             }
             
             #final-scene h2 { 
-                font-size: 1.8rem;
-                margin-bottom: 25px;
-                line-height: 1.3;
+                font-size: 2rem;
+                margin-bottom: 20px;
             }
             
             .final-message { 
-                padding: 20px 15px;
-                border-radius: 15px;
-                max-height: 55vh;
+                padding: 20px;
+                border-radius: 20px;
+                max-height: 70vh;
                 margin-bottom: 20px;
+                text-align: left;
             }
             
             .final-message p { 
                 font-size: 0.95rem;
-                line-height: 1.7;
-                margin-bottom: 15px;
+                line-height: 1.5;
+                margin-bottom: 12px;
             }
             
             .final-message .signature {
-                font-size: 1.1rem;
+                font-size: 1.2rem;
                 margin-top: 20px;
             }
             
             .heart-container { 
-                width: 100px; 
-                height: 100px;
-                margin-bottom: 25px;
+                width: 120px; 
+                height: 120px;
+                margin-bottom: 20px;
             }
             
             .instruction {
-                font-size: 0.85rem;
+                font-size: 0.9rem;
                 bottom: 20px;
-                padding: 0 10px;
             }
 
             .btn {
-                padding: 12px 25px;
-                font-size: 0.95rem;
+                padding: 12px 30px;
+                font-size: 1rem;
             }
         }
 
@@ -622,51 +610,23 @@
                 width: 75px;
                 height: 75px;
             }
-
-            .modal-content {
-                padding: 20px 12px;
-                max-height: 80vh;
-            }
-
-            .modal-content h2 {
-                font-size: 1.4rem;
-            }
-
-            .modal-content .message {
-                font-size: 0.9rem;
-                line-height: 1.6;
-            }
-
-            .modal-planet {
-                width: 70px;
-                height: 70px;
-                margin-bottom: 15px;
-            }
-
-            #final-scene h1 {
-                font-size: 1.2rem;
-                padding: 0 10px;
-            }
-
-            #final-scene h2 {
-                font-size: 1.6rem;
-                padding: 0 10px;
-            }
-
+            
             .final-message {
-                padding: 18px 12px;
-                max-height: 50vh;
+                padding: 15px;
+                max-height: 65vh;
             }
-
+            
             .final-message p {
                 font-size: 0.9rem;
-                line-height: 1.65;
-                margin-bottom: 12px;
+                line-height: 1.4;
             }
-
-            .btn {
-                padding: 10px 20px;
-                font-size: 0.9rem;
+            
+            #final-scene h1 {
+                font-size: 1.3rem;
+            }
+            
+            #final-scene h2 {
+                font-size: 1.8rem;
             }
         }
     </style>
@@ -739,36 +699,24 @@
             <h2>You ARE my universe.</h2>
             <div class="final-message">
                 <p>Saraaaaa♥️…</p>
-
 <p>Tum meri zindagi mein pal bhar ki khushi bankar nahi aayi thi… tum uss waqt aayi jab sab kuch ajeeb bekaar aur thoda sa khaali lagta tha Tum aayi… aur sab kuch badal gaya Tumne sirf mere din nahi meri soch meri rooh aur meri poori duniya ko naya roop de diya Tumhare aane ke baad zindagi sirf guzarna band ho gayi… mehsoos hone lagi</p>
-
 <p>Main tumhe kisi wajah se nahi chahta… main tumhe bas chahta hoon Tum meri zindagi mein kisi jagah ko bharne ke liye nahi aayi… tum meri zindagi ban gayi ho Tum meri khamoshi ka sabse gehra matlab ho Tum meri soch ka wo hissa ho jahan se har raat ek dua uthti hai har subah ek nayi wajah milti hai</p>
-
 <p>Jab tum meri taraf dekhti ho na… to sab kuch ruk jaata hai Tumhari aankhon mein vo sukoon hai jo main duniya bhar mein dhoondh kar bhi nahi paa sakta Tum meri sapne nahi ho… tum meri sachchai ho Tum vo ehsaas ho jise samjhana mumkin nahi sirf mehsoos kiya jaa sakta hai</p>
-
 <p>Main perfect nahi hoon na main kabhi sab kuch aasan kar sakta hoon… lekin main tumhare saath har mushkil ka bojh uthana chahta hoon Main sirf tumhare ache pal nahi tumhara har sach har dard har lamha jeena chahta hoon Tum meri kamzori nahi… meri sabse badi himmat ho Tum meri duaon ka ant nahi meri shuruaat ho</p>
-
 <p>Mujhe yaad hai wo raat… samundar ke kinaare… sirf hawa nahi chal rahi thi kuch mere andar bhi hil raha tha Tum mere itni kareeb thi ke main tumhari saansein mehsoos kar sakta tha Tumhari aankhon ka wo gehra nasha tumhare chehre ka wo shant sa glow… sab kuch mere andar kuch tod kar naya bana raha tha Tum meri baahon mein sirf ek ehsaas nahi thi… tum meri zindagi ka wo lamha thi jo main hamesha mehsoos karna chahta hoon</p>
-
-<p>Tum meri aadat nahi ho Sara… tum meri zarurat ho Tum meri duniya ka sabse khoobsurat hissa ho Tum meri izzat ho meri fikr ho meri aankhon ka sukoon ho Tum meri har soch mein itni gehraai tak basi ho ke tumhare bina sab kuch adhura lagta hai Tum meri daulat ho… meri sabse badi jeet</p>
-
-<p>Main maanta hoon… main kabhi kabhi galat tha Maine tumhe dukh diya kuch aise pal diye jo tum deserve nahi karti thi Main uss bojh ke saath jee raha hoon… kyunki main jaanta hoon tum meri kahani ka sabse khoobsurat hissa ho Main kisi film ka hero ban kar nahi ek insaan ban kar tumhare saamne khada hoon — sab kuch tod kar sirf tumhara intezaar lekar</p>
-
+<p>Tum meri aadat nahi ho Saraaaaa♥️ tum meri zarurat ho Tum meri duniya ka sabse khoobsurat hissa ho Tum meri izzat ho meri fikr ho meri aankhon ka sukoon ho Tum meri har soch mein itni gehraai tak basi ho ke tumhare bina sab kuch adhura lagta hai Tum meri daulat ho… meri sabse badi jeet</p>
+<p>Main maanta hoon… main kabhi kabhi galat tha Maine tumhe dukh diya kuch aise pal diye jo tum deserve nahi karti thi Main uss bojh ke saath jee raha hoon… kyunki main jaanta hoon tum meri kahani ka sabse khoobsurat hissa ho Main kisi film ka hero ban kar nahi ek insaan ban kar tumhare saamne khada hoon sab kuch tod kar sirf tumhara intezaar lekar</p>
 <p>Tum meri yaad nahi… meri poori kahani ho Tum meri manzil nahi meri raah ho Tum meri rooh ka sukoon ho Tum meri dua ho meri sabse badi zarurat ho Tum meri aakhri had ho</p>
-
-<p>Agar tum bas ek baar apna dil naram karke meri taraf dekho… to main duniya ke har mod par tumhare liye jhukne ko tayyar hoon Main sirf tumhara Asif ban kar jeena chahta hoon — jo tumhari hansi mein sukoon paata hai tumhari aankhon mein apna ghar dekhta hai tumhari baahon mein poori zindagi mehsoos karta hai</p>
-
+<p>Agar tum bas ek baar apna dil naram karke meri taraf dekho… to main duniya ke har mod par tumhare liye jhukne ko tayyar hoon Main sirf tumhara Asif ban kar jeena chahta hoon jo tumhari hansi mein sukoon paata hai tumhari aankhon mein apna ghar dekhta hai tumhari baahon mein poori zindagi mehsoos karta hai</p>
 <p>Main duniya se haar sakta hoon… par tumse kabhi nahi Tum meri dua ho meri rooh ka sukoon ho meri zindagi ka sabse sachcha hissa ho</p>
 <p>Tum meri last had ho… meri poori duniya ho… meri Saraaaaa♥️ ✨</p>
 <p>I Lykkkkeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee Uuuuuuhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh Meri Jaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaannn♥️💋💋💋💋💋💋💋💋💋💋</p>
-
-                
             </div>
             <button class="btn" onclick="replay()">🔄 Orbit Forever</button>
         </div>
     </div>
 
-  <script>
+    <script>
         // CUSTOMIZE YOUR LOVE STORY HERE
         const planets = [
             {
@@ -798,7 +746,7 @@ Aur agar kabhi tum meri aankhon mein dekho na… to tumhe samajh aa jaayega main
                 color: '#C780FA',
                 x: 70,
                 y: 35,
-                message:  `Tum meri zindagi mein aayi aur sab kuch badal gaya Tumne meri soch ko meri ehsaas ko aur mujhe poora naya banaya Tumhari wajah se har cheez mein ek nayi roshni aayi Tum meri aadat nahi meri zarurat ban gayi ho Tum wo hissaa ho jo meri duniya ko poora banata hai
+                message: `Tum meri zindagi mein aayi aur sab kuch badal gaya Tumne meri soch ko meri ehsaas ko aur mujhe poora naya banaya Tumhari wajah se har cheez mein ek nayi roshni aayi Tum meri aadat nahi meri zarurat ban gayi ho Tum wo hissaa ho jo meri duniya ko poora banata hai
 
 Tumhari aankhen meri har baat ko chup chaap samajh leti hain Tumhari muskaan meri har thakan ko mita deti hai Tumhara saath mere andar ek aisi sukoon bhar deta hai jo is duniya mein kahin aur nahi milta Tumhare saath main sirf khush nahi mehsoos karta main zinda mehsoos karta hoon
 
