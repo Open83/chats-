@@ -1,389 +1,739 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Heart, Volume2, VolumeX, RotateCcw } from 'lucide-react';
-
-const EternalUniverse = () => {
-  const [scene, setScene] = useState('void');
-  const [audioEnabled, setAudioEnabled] = useState(false);
-  const [selectedPlanet, setSelectedPlanet] = useState(null);
-  const [starBurst, setStarBurst] = useState(false);
-  const canvasRef = useRef(null);
-  const audioContextRef = useRef(null);
-
-  // Love story data - CUSTOMIZE THIS
-  const planets = [
-    {
-      id: 'first-spark',
-      name: 'First Spark',
-      color: '#FF6B9D',
-      x: 30,
-      y: 25,
-      message: 'The moment our eyes met, time stopped. It was just you and me in a crowded world.',
-      memory: 'Remember how nervous I was? Your smile made everything feel right.'
-    },
-    {
-      id: 'moments',
-      name: 'Our Moments',
-      color: '#C780FA',
-      x: 70,
-      y: 35,
-      message: 'Every laugh, every adventure, every quiet moment. They all led me deeper into you.',
-      memory: 'From midnight talks to silly fights, every second with you is my favorite story.'
-    },
-    {
-      id: 'dreams',
-      name: 'Dreams Together',
-      color: '#4ECDC4',
-      x: 50,
-      y: 70,
-      message: 'I see us traveling the world, building a home, creating a life that feels like forever.',
-      memory: 'Every dream I have now has you in it. You\'re my future.'
-    },
-    {
-      id: 'my-world',
-      name: 'My World',
-      color: '#FFE66D',
-      x: 20,
-      y: 60,
-      message: 'You\'re not just in my life. You ARE my life. My reason, my peace, my everything.',
-      memory: 'Before you, I was existing. With you, I\'m alive.'
-    }
-  ];
-
-  // Starfield animation
-  useEffect(() => {
-    if (scene === 'void' || !canvasRef.current) return;
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    let animationId;
-    let stars = [];
-
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      initStars();
-    };
-
-    const initStars = () => {
-      stars = [];
-      const starCount = window.innerWidth < 768 ? 150 : 300;
-      for (let i = 0; i < starCount; i++) {
-        stars.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          size: Math.random() * 2,
-          speed: Math.random() * 0.5 + 0.1,
-          opacity: Math.random()
-        });
-      }
-    };
-
-    const animate = () => {
-      ctx.fillStyle = 'rgba(10, 10, 25, 0.1)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      stars.forEach(star => {
-        ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-        ctx.fill();
-
-        star.opacity = Math.sin(Date.now() * 0.001 + star.x) * 0.5 + 0.5;
-      });
-
-      animationId = requestAnimationFrame(animate);
-    };
-
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-    animate();
-
-    return () => {
-      window.removeEventListener('resize', resizeCanvas);
-      cancelAnimationFrame(animationId);
-    };
-  }, [scene]);
-
-  // Simple heartbeat sound using Web Audio API
-  const playHeartbeat = () => {
-    if (!audioContextRef.current) {
-      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    const ctx = audioContextRef.current;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    
-    osc.frequency.value = 55;
-    gain.gain.setValueAtTime(0.1, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
-    
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.5);
-  };
-
-  useEffect(() => {
-    if (audioEnabled && scene !== 'void' && scene !== 'final') {
-      const interval = setInterval(playHeartbeat, 1200);
-      return () => clearInterval(interval);
-    }
-  }, [audioEnabled, scene]);
-
-  const handleStart = () => {
-    setScene('birth');
-    setStarBurst(true);
-    setTimeout(() => {
-      setScene('universe');
-      setStarBurst(false);
-    }, 3000);
-  };
-
-  const handlePlanetClick = (planet) => {
-    setSelectedPlanet(planet);
-  };
-
-  const closePlanet = () => {
-    setSelectedPlanet(null);
-  };
-
-  const goToFinal = () => {
-    setScene('final');
-  };
-
-  const replay = () => {
-    setScene('void');
-    setSelectedPlanet(null);
-  };
-
-  return (
-    <div className="relative w-full h-screen overflow-hidden bg-gradient-to-b from-[#0a0a19] via-[#1a0a2e] to-[#0a0a19]">
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-
-      {/* Audio Toggle */}
-      {scene !== 'void' && (
-        <button
-          onClick={() => setAudioEnabled(!audioEnabled)}
-          className="absolute top-4 right-4 z-50 p-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all"
-        >
-          {audioEnabled ? <Volume2 className="w-5 h-5 text-white" /> : <VolumeX className="w-5 h-5 text-white" />}
-        </button>
-      )}
-
-      {/* VOID SCENE */}
-      {scene === 'void' && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center px-6 animate-fade-in">
-            <div className="mb-8">
-              {[...Array(20)].map((_, i) => (
-                <div
-                  key={i}
-                  className="absolute animate-twinkle"
-                  style={{
-                    left: `${Math.random() * 100}%`,
-                    top: `${Math.random() * 100}%`,
-                    width: '2px',
-                    height: '2px',
-                    backgroundColor: 'white',
-                    borderRadius: '50%',
-                    animationDelay: `${Math.random() * 3}s`
-                  }}
-                />
-              ))}
-            </div>
-            <h1 className="text-white text-2xl md:text-4xl font-light mb-8 animate-pulse-slow">
-              Before there was us...
-            </h1>
-            <p className="text-white/60 text-lg md:text-xl mb-12">there was silence.</p>
-            <button
-              onClick={handleStart}
-              className="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/30 rounded-full text-white hover:bg-white/20 transition-all duration-300 text-lg"
-            >
-              Begin the Journey
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* BIRTH SCENE */}
-      {scene === 'birth' && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center px-6">
-            <div className={`mb-8 ${starBurst ? 'animate-star-burst' : ''}`}>
-              <div className="w-32 h-32 md:w-48 md:h-48 mx-auto rounded-full bg-gradient-to-r from-yellow-200 via-yellow-400 to-yellow-200 animate-pulse-glow shadow-2xl shadow-yellow-500/50" />
-            </div>
-            <h1 className="text-white text-3xl md:text-5xl font-light animate-fade-in-up">
-              Then, you appeared.
-            </h1>
-          </div>
-        </div>
-      )}
-
-      {/* UNIVERSE SCENE */}
-      {scene === 'universe' && !selectedPlanet && (
-        <div className="absolute inset-0">
-          {/* Center Sun (Her) */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-r from-yellow-200 via-yellow-400 to-yellow-200 animate-pulse-glow shadow-2xl shadow-yellow-500/50" />
-            <p className="text-white text-center mt-4 text-sm md:text-base font-light">You</p>
-          </div>
-
-          {/* Orbiting Planets */}
-          {planets.map((planet, idx) => (
-            <button
-              key={planet.id}
-              onClick={() => handlePlanetClick(planet)}
-              className="absolute animate-float group"
-              style={{
-                left: `${planet.x}%`,
-                top: `${planet.y}%`,
-                animationDelay: `${idx * 0.5}s`
-              }}
-            >
-              <div
-                className="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-white/20 backdrop-blur-sm hover:scale-110 transition-transform duration-300"
-                style={{ backgroundColor: planet.color }}
-              />
-              <p className="text-white text-xs md:text-sm text-center mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                {planet.name}
-              </p>
-            </button>
-          ))}
-
-          {/* Eternal Star */}
-          <button
-            onClick={goToFinal}
-            className="absolute top-[15%] right-[10%] animate-pulse-glow group"
-          >
-            <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-r from-pink-300 via-purple-300 to-blue-300 shadow-2xl shadow-purple-500/50 hover:scale-110 transition-transform" />
-            <p className="text-white text-sm md:text-base text-center mt-2">✨ Eternal Star</p>
-          </button>
-
-          {/* Instructions */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center px-6">
-            <p className="text-white/60 text-sm md:text-base">Touch the planets to explore our story</p>
-          </div>
-        </div>
-      )}
-
-      {/* PLANET DETAIL */}
-      {selectedPlanet && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/70 backdrop-blur-md z-40 animate-fade-in p-6">
-          <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 md:p-12 max-w-2xl animate-scale-in">
-            <div
-              className="w-20 h-20 md:w-24 md:h-24 mx-auto rounded-full mb-6 animate-pulse-glow"
-              style={{ backgroundColor: selectedPlanet.color }}
-            />
-            <h2 className="text-white text-2xl md:text-4xl font-light mb-6 text-center">
-              {selectedPlanet.name}
-            </h2>
-            <p className="text-white/90 text-base md:text-lg mb-6 leading-relaxed text-center">
-              {selectedPlanet.message}
-            </p>
-            <p className="text-white/70 text-sm md:text-base italic text-center mb-8">
-              {selectedPlanet.memory}
-            </p>
-            <button
-              onClick={closePlanet}
-              className="block mx-auto px-8 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white hover:bg-white/30 transition-all"
-            >
-              Continue Journey
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* FINAL SCENE */}
-      {scene === 'final' && (
-        <div className="absolute inset-0 flex items-center justify-center px-6">
-          <div className="text-center max-w-3xl animate-fade-in">
-            <div className="mb-8 relative">
-              <Heart className="w-32 h-32 md:w-48 md:h-48 mx-auto text-pink-400 animate-pulse-glow" fill="currentColor" />
-              <div className="absolute inset-0 animate-ping-slow">
-                <Heart className="w-32 h-32 md:w-48 md:h-48 mx-auto text-pink-400/30" />
-              </div>
-            </div>
-            <h1 className="text-white text-3xl md:text-5xl font-light mb-8 leading-relaxed animate-fade-in-up">
-              You're not just a part of my life...
-            </h1>
-            <h2 className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-4xl md:text-6xl font-bold mb-12 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-              You ARE my universe.
-            </h2>
-            <div className="bg-white/5 backdrop-blur-lg border border-white/20 rounded-3xl p-8 md:p-12 mb-8 animate-fade-in-up" style={{ animationDelay: '1s' }}>
-              <p className="text-white/90 text-lg md:text-xl leading-relaxed mb-6">
-                I built this universe not because I love space... but because you made my world infinite.
-              </p>
-              <p className="text-white/90 text-lg md:text-xl leading-relaxed mb-6">
-                Every star here is a heartbeat. Every planet is a memory.
-              </p>
-              <p className="text-white/90 text-lg md:text-xl leading-relaxed">
-                And at the center of it all... is you.
-              </p>
-              <p className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-400 text-2xl md:text-3xl font-bold mt-8">
-                My sun. My forever. ☀️
-              </p>
-            </div>
-            <button
-              onClick={replay}
-              className="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/30 rounded-full text-white hover:bg-white/20 transition-all inline-flex items-center gap-2"
-            >
-              <RotateCcw className="w-5 h-5" />
-              Orbit Forever
-            </button>
-          </div>
-        </div>
-      )}
-
-      <style jsx>{`
-        @keyframes fade-in {
-          from { opacity: 0; }
-          to { opacity: 1; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Eternal Universe - For You</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        @keyframes fade-in-up {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #0a0a19, #1a0a2e, #0a0a19);
+            color: white;
         }
-        @keyframes scale-in {
-          from { opacity: 0; transform: scale(0.8); }
-          to { opacity: 1; transform: scale(1); }
+
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
         }
-        @keyframes pulse-slow {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
+
+        .scene {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
         }
-        @keyframes pulse-glow {
-          0%, 100% { box-shadow: 0 0 40px currentColor, 0 0 80px currentColor; }
-          50% { box-shadow: 0 0 20px currentColor, 0 0 40px currentColor; }
+
+        .scene.active {
+            opacity: 1;
+            pointer-events: all;
         }
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
+
+        /* Audio Toggle */
+        #audioToggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 50;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
         }
+
+        #audioToggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        #audioToggle.show {
+            display: flex;
+        }
+
+        /* Void Scene */
+        #void-scene {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .void-stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .void-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        #void-scene h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+            animation: pulse-slow 3s ease-in-out infinite;
+        }
+
+        #void-scene p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* Birth Scene */
+        #birth-scene {
+            text-align: center;
+        }
+
+        .center-star {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+            margin: 0 auto 30px;
+            animation: pulse-glow 2s ease-in-out infinite;
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.8);
+        }
+
+        .center-star.burst {
+            animation: star-burst 2s ease-out forwards;
+        }
+
+        #birth-scene h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            animation: fade-in-up 1s ease-out;
+        }
+
+        /* Universe Scene */
+        #universe-scene {
+            width: 100%;
+            height: 100%;
+        }
+
+        .sun {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.8);
+            animation: pulse-glow 2s ease-in-out infinite;
+            z-index: 3;
+        }
+
+        .sun-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, 140px);
+            font-size: 1rem;
+            font-weight: 300;
+            z-index: 3;
+        }
+
+        .planet {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .planet:hover {
+            transform: scale(1.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .planet-label {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .planet:hover .planet-label {
+            opacity: 1;
+        }
+
+        .eternal-star {
+            position: absolute;
+            top: 15%;
+            right: 10%;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b9d, #c780fa, #4ecdc4);
+            box-shadow: 0 0 60px rgba(199, 128, 250, 0.8);
+            cursor: pointer;
+            animation: pulse-glow 2s ease-in-out infinite;
+            transition: all 0.3s ease;
+        }
+
+        .eternal-star:hover {
+            transform: scale(1.1);
+        }
+
+        .eternal-label {
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1rem;
+            white-space: nowrap;
+        }
+
+        .instruction {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        /* Planet Modal */
+        #planet-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 40;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #planet-modal.show {
+            display: flex;
+            animation: fade-in 0.3s ease-out;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            animation: scale-in 0.3s ease-out;
+        }
+
+        .modal-planet {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        .modal-content h2 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+        }
+
+        .modal-content .message {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .modal-content .memory {
+            font-size: 1rem;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+        }
+
+        /* Final Scene */
+        #final-scene {
+            text-align: center;
+            padding: 20px;
+            max-width: 900px;
+        }
+
+        .heart-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 40px;
+        }
+
+        .heart {
+            width: 100%;
+            height: 100%;
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        .heart-ping {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            animation: ping-slow 3s ease-out infinite;
+            opacity: 0.3;
+        }
+
+        #final-scene h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 30px;
+            line-height: 1.5;
+            animation: fade-in-up 1s ease-out;
+        }
+
+        #final-scene h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ff6b9d, #c780fa, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 40px;
+            animation: fade-in-up 1s ease-out 0.5s backwards;
+        }
+
+        .final-message {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            padding: 40px;
+            margin-bottom: 30px;
+            animation: fade-in-up 1s ease-out 1s backwards;
+        }
+
+        .final-message p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .final-message .signature {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ffd700, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 30px;
+        }
+
+        /* Animations */
         @keyframes twinkle {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 1; }
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
         }
-        @keyframes star-burst {
-          0% { transform: scale(1); opacity: 1; }
-          100% { transform: scale(5); opacity: 0; }
-        }
-        @keyframes ping-slow {
-          0% { transform: scale(1); opacity: 1; }
-          100% { transform: scale(1.5); opacity: 0; }
-        }
-        .animate-fade-in { animation: fade-in 1s ease-out; }
-        .animate-fade-in-up { animation: fade-in-up 1s ease-out; }
-        .animate-scale-in { animation: scale-in 0.5s ease-out; }
-        .animate-pulse-slow { animation: pulse-slow 3s ease-in-out infinite; }
-        .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
-        .animate-float { animation: float 3s ease-in-out infinite; }
-        .animate-twinkle { animation: twinkle 3s ease-in-out infinite; }
-        .animate-star-burst { animation: star-burst 2s ease-out; }
-        .animate-ping-slow { animation: ping-slow 3s ease-out infinite; }
-      `}</style>
-    </div>
-  );
-};
 
-export default EternalUniverse;
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { 
+                box-shadow: 0 0 40px currentColor, 0 0 80px currentColor;
+                filter: brightness(1);
+            }
+            50% { 
+                box-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+                filter: brightness(1.2);
+            }
+        }
+
+        @keyframes star-burst {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(5); opacity: 0; }
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes scale-in {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes ping-slow {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            #void-scene h1 { font-size: 1.8rem; }
+            #void-scene p { font-size: 1rem; }
+            #birth-scene h1 { font-size: 2rem; }
+            .center-star { width: 150px; height: 150px; }
+            .sun { width: 80px; height: 80px; }
+            .planet { width: 60px; height: 60px; }
+            .eternal-star { width: 80px; height: 80px; }
+            .modal-content { padding: 30px 20px; }
+            .modal-content h2 { font-size: 1.8rem; }
+            .modal-content .message { font-size: 1rem; }
+            #final-scene h1 { font-size: 1.8rem; }
+            #final-scene h2 { font-size: 2rem; }
+            .final-message { padding: 30px 20px; }
+            .final-message p { font-size: 1rem; }
+            .heart-container { width: 150px; height: 150px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <!-- Audio Toggle -->
+    <button id="audioToggle">🔊</button>
+
+    <!-- Void Scene -->
+    <div id="void-scene" class="scene active">
+        <div class="void-stars" id="voidStars"></div>
+        <div>
+            <h1>Before there was us...</h1>
+            <p>there was silence.</p>
+            <button class="btn" onclick="startJourney()">Begin the Journey</button>
+        </div>
+    </div>
+
+    <!-- Birth Scene -->
+    <div id="birth-scene" class="scene">
+        <div>
+            <div class="center-star" id="birthStar"></div>
+            <h1>Then, you appeared.</h1>
+        </div>
+    </div>
+
+    <!-- Universe Scene -->
+    <div id="universe-scene" class="scene">
+        <div class="sun"></div>
+        <div class="sun-label">You</div>
+        
+        <!-- Planets (will be generated by JS) -->
+        <div id="planetsContainer"></div>
+        
+        <!-- Eternal Star -->
+        <div class="eternal-star" onclick="goToFinal()">
+            <div class="eternal-label">✨ Eternal Star</div>
+        </div>
+        
+        <div class="instruction">Touch the planets to explore our story</div>
+    </div>
+
+    <!-- Planet Modal -->
+    <div id="planet-modal">
+        <div class="modal-content">
+            <div class="modal-planet" id="modalPlanetIcon"></div>
+            <h2 id="modalTitle"></h2>
+            <p class="message" id="modalMessage"></p>
+            <p class="memory" id="modalMemory"></p>
+            <button class="btn" onclick="closeModal()">Continue Journey</button>
+        </div>
+    </div>
+
+    <!-- Final Scene -->
+    <div id="final-scene" class="scene">
+        <div>
+            <div class="heart-container">
+                <svg class="heart" viewBox="0 0 24 24" fill="#ff6b9d">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+                <svg class="heart heart-ping" viewBox="0 0 24 24" fill="#ff6b9d">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+            </div>
+            <h1>You're not just a part of my life...</h1>
+            <h2>You ARE my universe.</h2>
+            <div class="final-message">
+                <p>I built this universe not because I love space... but because you made my world infinite.</p>
+                <p>Every star here is a heartbeat. Every planet is a memory.</p>
+                <p>And at the center of it all... is you.</p>
+                <p class="signature">My sun. My forever. ☀️</p>
+            </div>
+            <button class="btn" onclick="replay()">🔄 Orbit Forever</button>
+        </div>
+    </div>
+
+    <script>
+        // CUSTOMIZE YOUR LOVE STORY HERE
+        const planets = [
+            {
+                id: 'first-spark',
+                name: 'First Spark',
+                color: '#FF6B9D',
+                x: 30,
+                y: 25,
+                message: 'The moment our eyes met, time stopped. It was just you and me in a crowded world.',
+                memory: 'Remember how nervous I was? Your smile made everything feel right.'
+            },
+            {
+                id: 'moments',
+                name: 'Our Moments',
+                color: '#C780FA',
+                x: 70,
+                y: 35,
+                message: 'Every laugh, every adventure, every quiet moment. They all led me deeper into you.',
+                memory: 'From midnight talks to silly fights, every second with you is my favorite story.'
+            },
+            {
+                id: 'dreams',
+                name: 'Dreams Together',
+                color: '#4ECDC4',
+                x: 50,
+                y: 70,
+                message: 'I see us traveling the world, building a home, creating a life that feels like forever.',
+                memory: 'Every dream I have now has you in it. You\'re my future.'
+            },
+            {
+                id: 'my-world',
+                name: 'My World',
+                color: '#FFE66D',
+                x: 20,
+                y: 60,
+                message: 'You\'re not just in my life. You ARE my life. My reason, my peace, my everything.',
+                memory: 'Before you, I was existing. With you, I\'m alive.'
+            }
+        ];
+
+        // State
+        let currentScene = 'void';
+        let audioEnabled = false;
+        let heartbeatInterval;
+        let animationFrame;
+
+        // Canvas setup
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initStars();
+        }
+
+        function initStars() {
+            stars = [];
+            const starCount = window.innerWidth < 768 ? 150 : 300;
+            for (let i = 0; i < starCount; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2,
+                    opacity: Math.random(),
+                    speed: Math.random() * 0.5
+                });
+            }
+        }
+
+        function animateStars() {
+            ctx.fillStyle = 'rgba(10, 10, 25, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            stars.forEach(star => {
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                star.opacity = Math.sin(Date.now() * 0.001 + star.x) * 0.5 + 0.5;
+            });
+
+            animationFrame = requestAnimationFrame(animateStars);
+        }
+
+        // Initialize
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        animateStars();
+
+        // Create void stars
+        const voidStars = document.getElementById('voidStars');
+        for (let i = 0; i < 20; i++) {
+            const star = document.createElement('div');
+            star.className = 'void-star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            voidStars.appendChild(star);
+        }
+
+        // Generate planets
+        const planetsContainer = document.getElementById('planetsContainer');
+        planets.forEach((planet, idx) => {
+            const planetEl = document.createElement('div');
+            planetEl.className = 'planet';
+            planetEl.style.left = planet.x + '%';
+            planetEl.style.top = planet.y + '%';
+            planetEl.style.backgroundColor = planet.color;
+            planetEl.style.animationDelay = (idx * 0.5) + 's';
+            planetEl.onclick = () => openPlanet(planet);
+
+            const label = document.createElement('div');
+            label.className = 'planet-label';
+            label.textContent = planet.name;
+            planetEl.appendChild(label);
+
+            planetsContainer.appendChild(planetEl);
+        });
+
+        // Scene transitions
+        function showScene(sceneName) {
+            document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+            document.getElementById(sceneName + '-scene').classList.add('active');
+            currentScene = sceneName;
+
+            if (sceneName !== 'void') {
+                document.getElementById('audioToggle').classList.add('show');
+            }
+        }
+
+        function startJourney() {
+            showScene('birth');
+            const birthStar = document.getElementById('birthStar');
+            
+            setTimeout(() => {
+                birthStar.classList.add('burst');
+            }, 1000);
+
+            setTimeout(() => {
+                showScene('universe');
+            }, 3000);
+        }
+
+        function openPlanet(planet) {
+            const modal = document.getElementById('planet-modal');
+            document.getElementById('modalPlanetIcon').style.backgroundColor = planet.color;
+            document.getElementById('modalTitle').textContent = planet.name;
+            document.getElementById('modalMessage').textContent = planet.message;
+            document.getElementById('modalMemory').textContent = planet.memory;
+            modal.classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('planet-modal').classList.remove('show');
+        }
+
+        function goToFinal() {
+            showScene('final');
+        }
+
+        function replay() {
+            showScene('void');
+            const birthStar = document.getElementById('birthStar');
+            birthStar.classList.remove('burst');
+        }
+
+        // Audio
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playHeartbeat() {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            
+            osc.frequency.value = 55;
+            gain.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            osc.start(audioContext.currentTime);
+            osc.stop(audioContext.currentTime + 0.5);
+        }
+
+        document.getElementById('audioToggle').addEventListener('click', function() {
+            audioEnabled = !audioEnabled;
+            this.textContent = audioEnabled ? '🔊' : '🔇';
+
+            if (audioEnabled) {
+                heartbeatInterval = setInterval(() => {
+                    if (currentScene === 'universe' || currentScene === 'final') {
+                        playHeartbeat();
+                    }
+                }, 1200);
+            } else {
+                clearInterval(heartbeatInterval);
+            }
+        });
+    </script>
+</body>
+</html>
