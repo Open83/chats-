@@ -14,7 +14,7 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
-            background: linear-gradient(to bottom, #0a0a19, #1a0a2e, #0a0a19);
+            background: #000;
             color: white;
         }
 
@@ -25,6 +25,31 @@
             width: 100%;
             height: 100%;
             z-index: 1;
+        }
+
+        /* Cosmic Background Effects */
+        .cosmic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+        }
+
+        .cosmic-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 0, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 0, 150, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(0, 150, 255, 0.1) 0%, transparent 50%);
+            animation: cosmic-pulse 8s ease-in-out infinite;
         }
 
         .scene {
@@ -39,7 +64,7 @@
             z-index: 2;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.5s ease;
+            transition: opacity 1s ease;
             overflow-y: auto;
             overflow-x: hidden;
             padding: 20px;
@@ -50,38 +75,65 @@
             pointer-events: all;
         }
 
-        /* Audio Toggle */
+        /* Particle Effects */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: float-particle 20s infinite ease-in-out;
+            opacity: 0;
+        }
+
+        /* Audio Toggle - Enhanced */
         #audioToggle {
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 50;
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.3), rgba(78, 205, 196, 0.3));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
             cursor: pointer;
             display: none;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             font-size: 1.5rem;
+            box-shadow: 0 8px 32px rgba(255, 107, 157, 0.3);
         }
 
         #audioToggle:hover {
-            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 12px 48px rgba(255, 107, 157, 0.5);
         }
 
         #audioToggle.show {
             display: flex;
+            animation: slide-in-bounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
-        /* Void Scene */
+        /* Void Scene - LEGENDARY */
         #void-scene {
             text-align: center;
             padding: 20px;
+        }
+
+        .void-content {
+            position: relative;
+            z-index: 10;
         }
 
         .void-stars {
@@ -92,70 +144,136 @@
 
         .void-star {
             position: absolute;
-            width: 2px;
-            height: 2px;
+            width: 3px;
+            height: 3px;
             background: white;
             border-radius: 50%;
-            animation: twinkle 3s ease-in-out infinite;
+            animation: twinkle-advanced 4s ease-in-out infinite;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
         }
 
         #void-scene h1 {
-            font-size: 2.5rem;
-            font-weight: 300;
-            margin-bottom: 20px;
-            animation: pulse-slow 3s ease-in-out infinite;
+            font-size: 3rem;
+            font-weight: 200;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #fff, #8b9dc3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: text-glow 4s ease-in-out infinite, fade-in-down 1.5s ease-out;
+            letter-spacing: 3px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
         }
 
         #void-scene p {
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.6);
-            margin-bottom: 40px;
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 50px;
+            animation: fade-in-up 2s ease-out 0.5s backwards;
+            letter-spacing: 2px;
         }
 
         .btn {
-            padding: 15px 40px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 18px 50px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.4);
             border-radius: 50px;
             color: white;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.05);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 50px rgba(255, 255, 255, 0.4);
+            border-color: rgba(255, 255, 255, 0.8);
         }
 
-        /* Birth Scene */
+        .btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Birth Scene - EPIC */
         #birth-scene {
             text-align: center;
         }
 
+        .birth-content {
+            position: relative;
+            z-index: 10;
+        }
+
         .center-star {
-            width: 200px;
-            height: 200px;
+            width: 250px;
+            height: 250px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
-            margin: 0 auto 30px;
-            animation: pulse-glow 2s ease-in-out infinite;
-            box-shadow: 0 0 60px rgba(255, 215, 0, 0.8);
+            background: radial-gradient(circle at 30% 30%, #fff, #ffd700, #ff6b00);
+            margin: 0 auto 40px;
+            animation: star-glow-intense 2s ease-in-out infinite;
+            box-shadow: 
+                0 0 60px rgba(255, 215, 0, 1),
+                0 0 120px rgba(255, 215, 0, 0.8),
+                0 0 180px rgba(255, 215, 0, 0.6),
+                inset 0 0 60px rgba(255, 255, 255, 0.5);
+            position: relative;
+        }
+
+        .center-star::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.4), transparent);
+            animation: pulse-ring 2s ease-in-out infinite;
         }
 
         .center-star.burst {
-            animation: star-burst 2s ease-out forwards;
+            animation: star-burst-epic 2.5s ease-out forwards;
         }
 
         #birth-scene h1 {
-            font-size: 3rem;
-            font-weight: 300;
-            animation: fade-in-up 1s ease-out;
+            font-size: 3.5rem;
+            font-weight: 200;
+            background: linear-gradient(45deg, #ffd700, #ff6b9d, #c780fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fade-in-up-scale 1.5s ease-out, text-shimmer 3s ease-in-out infinite;
+            letter-spacing: 4px;
+            text-shadow: 0 0 40px rgba(255, 215, 0, 0.5);
         }
 
-        /* Universe Scene */
+        /* Universe Scene - MAGNIFICENT */
         #universe-scene {
             width: 100%;
             height: 100%;
@@ -174,107 +292,208 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 120px;
-            height: 120px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
-            box-shadow: 0 0 60px rgba(255, 215, 0, 0.8);
-            animation: pulse-glow 2s ease-in-out infinite;
+            background: radial-gradient(circle at 30% 30%, #fff, #ffd700, #ff8c00);
+            box-shadow: 
+                0 0 80px rgba(255, 215, 0, 1),
+                0 0 140px rgba(255, 215, 0, 0.8),
+                0 0 200px rgba(255, 165, 0, 0.6),
+                inset 0 0 50px rgba(255, 255, 255, 0.5);
+            animation: sun-pulse 3s ease-in-out infinite;
             z-index: 3;
+        }
+
+        .sun::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.3), transparent);
+            animation: sun-rays 4s linear infinite;
         }
 
         .sun-label {
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, 140px);
-            font-size: 1rem;
-            font-weight: 300;
+            transform: translate(-50%, 160px);
+            font-size: 1.3rem;
+            font-weight: 600;
             z-index: 3;
+            background: linear-gradient(45deg, #ffd700, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+            animation: pulse-text 2s ease-in-out infinite;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
         }
 
         .planet {
             position: absolute;
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
-            border: 4px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(5px);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
             cursor: pointer;
-            transition: all 0.3s ease;
-            animation: float 3s ease-in-out infinite;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            animation: float-orbit 4s ease-in-out infinite;
+            box-shadow: 0 0 30px currentColor, inset 0 0 20px rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .planet::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent 70%);
+            animation: planet-shine 3s linear infinite;
+        }
+
+        .planet:hover {
+            transform: scale(1.3) rotate(10deg);
+            border-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 50px currentColor, 0 0 80px currentColor, inset 0 0 30px rgba(255, 255, 255, 0.3);
         }
 
         .planet:active {
-            transform: scale(0.95);
+            transform: scale(1.15);
         }
 
         .planet-label {
             position: absolute;
-            bottom: -30px;
+            bottom: -40px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             white-space: nowrap;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: all 0.4s ease;
             pointer-events: none;
+            background: linear-gradient(45deg, currentColor, rgba(255, 255, 255, 0.8));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+            letter-spacing: 1px;
         }
 
         .planet:hover .planet-label {
             opacity: 1;
+            bottom: -35px;
         }
+
+        /* Orbital Rings */
+        .orbital-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: rotate-ring 30s linear infinite;
+        }
+
+        .ring-1 { width: 300px; height: 300px; }
+        .ring-2 { width: 450px; height: 450px; animation-duration: 40s; }
+        .ring-3 { width: 600px; height: 600px; animation-duration: 50s; }
 
         .eternal-star {
             position: absolute;
-            top: 15%;
-            right: 10%;
-            width: 100px;
-            height: 100px;
+            top: 12%;
+            right: 8%;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #ff6b9d, #c780fa, #4ecdc4);
-            box-shadow: 0 0 60px rgba(199, 128, 250, 0.8);
+            background: linear-gradient(135deg, #ff6b9d, #c780fa, #4ecdc4, #ffd700);
+            background-size: 300% 300%;
+            box-shadow: 
+                0 0 60px rgba(199, 128, 250, 1),
+                0 0 100px rgba(255, 107, 157, 0.8),
+                0 0 140px rgba(78, 205, 196, 0.6);
             cursor: pointer;
-            animation: pulse-glow 2s ease-in-out infinite;
-            transition: all 0.3s ease;
+            animation: eternal-glow 3s ease-in-out infinite, gradient-shift 6s ease infinite;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             z-index: 4;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .eternal-star::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: star-rotate 4s linear infinite;
+        }
+
+        .eternal-star:hover {
+            transform: scale(1.2) rotate(15deg);
+            box-shadow: 
+                0 0 80px rgba(199, 128, 250, 1),
+                0 0 120px rgba(255, 107, 157, 0.9),
+                0 0 160px rgba(78, 205, 196, 0.7);
         }
 
         .eternal-star:active {
-            transform: scale(0.95);
+            transform: scale(1.1);
         }
 
         .eternal-label {
             position: absolute;
-            bottom: -35px;
+            bottom: -40px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 1rem;
+            font-size: 1.1rem;
             white-space: nowrap;
             pointer-events: none;
+            background: linear-gradient(45deg, #ff6b9d, #c780fa, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            letter-spacing: 1px;
+            animation: pulse-text 2s ease-in-out infinite;
         }
 
         .instruction {
             position: absolute;
-            bottom: 40px;
+            bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
             text-align: center;
             width: 90%;
-            max-width: 400px;
+            max-width: 500px;
+            animation: fade-pulse 3s ease-in-out infinite;
+            letter-spacing: 1px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
         }
 
-        /* Planet Modal */
+        /* Planet Modal - STUNNING */
         #planet-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
             z-index: 40;
             display: none;
             align-items: center;
@@ -285,58 +504,74 @@
 
         #planet-modal.show {
             display: flex;
-            animation: fade-in 0.3s ease-out;
+            animation: modal-fade-in 0.5s ease-out;
         }
 
         .modal-content {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 30px;
-            padding: 40px;
-            max-width: 600px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(30px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 40px;
+            padding: 50px;
+            max-width: 700px;
             width: 100%;
             text-align: center;
-            animation: scale-in 0.3s ease-out;
+            animation: modal-scale-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             max-height: 90vh;
             overflow-y: auto;
             margin: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 0 50px rgba(255, 255, 255, 0.05);
         }
 
         .modal-planet {
-            width: 100px;
-            height: 100px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
-            margin: 0 auto 30px;
-            animation: pulse-glow 2s ease-in-out infinite;
+            margin: 0 auto 40px;
+            animation: planet-modal-glow 2s ease-in-out infinite;
             flex-shrink: 0;
+            box-shadow: 0 0 50px currentColor, 0 0 80px currentColor, inset 0 0 30px rgba(255, 255, 255, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.4);
         }
 
         .modal-content h2 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             font-weight: 300;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #fff, currentColor);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+            animation: text-glow 3s ease-in-out infinite;
         }
 
         .modal-content .message {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 20px;
-            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            line-height: 2;
+            margin-bottom: 25px;
+            color: rgba(255, 255, 255, 0.95);
+            letter-spacing: 0.5px;
+            animation: fade-in-up 0.8s ease-out 0.3s backwards;
         }
 
         .modal-content .memory {
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-style: italic;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fade-in-up 0.8s ease-out 0.5s backwards;
         }
 
-        /* Final Scene */
+        /* Final Scene - LEGENDARY */
         #final-scene {
             text-align: center;
             padding: 20px;
-            max-width: 900px;
+            max-width: 1000px;
             width: 100%;
             margin: auto;
             overflow-y: auto;
@@ -349,21 +584,23 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 40px 20px;
+            padding: 60px 20px;
         }
 
         .heart-container {
             position: relative;
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 40px;
+            width: 250px;
+            height: 250px;
+            margin: 0 auto 50px;
             flex-shrink: 0;
+            animation: heart-beat-intense 1.5s ease-in-out infinite;
         }
 
         .heart {
             width: 100%;
             height: 100%;
-            animation: pulse-glow 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 40px #ff6b9d) drop-shadow(0 0 80px #ff1493);
+            animation: heart-glow-pulse 2s ease-in-out infinite;
         }
 
         .heart-ping {
@@ -372,229 +609,449 @@
             left: 0;
             width: 100%;
             height: 100%;
-            animation: ping-slow 3s ease-out infinite;
-            opacity: 0.3;
+            animation: heart-ping-slow 3s ease-out infinite;
+            opacity: 0.4;
+        }
+
+        /* Floating hearts background */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0;
+            animation: float-heart 15s linear infinite;
         }
 
         #final-scene h1 {
-            font-size: 2.5rem;
-            font-weight: 300;
-            margin-bottom: 30px;
-            line-height: 1.5;
-            animation: fade-in-up 1s ease-out;
+            font-size: 2.8rem;
+            font-weight: 200;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            animation: fade-in-up-scale 1.2s ease-out;
+            letter-spacing: 2px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
         }
 
         #final-scene h2 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 700;
-            background: linear-gradient(45deg, #ff6b9d, #c780fa, #4ecdc4);
+            background: linear-gradient(135deg, #ff6b9d, #c780fa, #4ecdc4, #ffd700);
+            background-size: 300% 300%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 40px;
-            animation: fade-in-up 1s ease-out 0.5s backwards;
+            margin-bottom: 50px;
+            animation: fade-in-up-scale 1.2s ease-out 0.5s backwards, gradient-shift 6s ease infinite;
+            letter-spacing: 3px;
+            text-shadow: 0 0 40px rgba(255, 107, 157, 0.5);
         }
 
         .final-message {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 30px;
-            padding: 40px;
-            margin-bottom: 30px;
-            animation: fade-in-up 1s ease-out 1s backwards;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(30px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 40px;
+            padding: 50px;
+            margin-bottom: 40px;
+            animation: fade-in-up-scale 1.2s ease-out 1s backwards;
             max-height: 60vh;
             overflow-y: auto;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.3),
+                inset 0 0 50px rgba(255, 255, 255, 0.05);
         }
 
         .final-message p {
-            font-size: 1.2rem;
-            line-height: 1.8;
-            margin-bottom: 20px;
-            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.3rem;
+            line-height: 2;
+            margin-bottom: 25px;
+            color: rgba(255, 255, 255, 0.95);
+            letter-spacing: 0.5px;
+            animation: fade-in-up 0.8s ease-out calc(1.2s + var(--delay)) backwards;
         }
+
+        .final-message p:nth-child(1) { --delay: 0.1s; }
+        .final-message p:nth-child(2) { --delay: 0.2s; }
+        .final-message p:nth-child(3) { --delay: 0.3s; }
+        .final-message p:nth-child(4) { --delay: 0.4s; }
+        .final-message p:nth-child(5) { --delay: 0.5s; }
+        .final-message p:nth-child(6) { --delay: 0.6s; }
 
         .final-message p:last-child {
             margin-bottom: 0;
         }
 
         .final-message .signature {
-            font-size: 1.5rem;
+            font-size: 2rem;
             font-weight: 700;
-            background: linear-gradient(45deg, #ffd700, #ff6b9d);
+            background: linear-gradient(45deg, #ffd700, #ff6b9d, #c780fa);
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-top: 30px;
+            margin-top: 40px;
+            animation: gradient-shift 4s ease infinite, pulse-text 2s ease-in-out infinite;
+            letter-spacing: 2px;
         }
 
-        /* Scrollbar Styling */
+        /* Scrollbar Styling - Beautiful */
         .final-message::-webkit-scrollbar,
         .modal-content::-webkit-scrollbar,
         #final-scene::-webkit-scrollbar {
-            width: 8px;
+            width: 10px;
         }
 
         .final-message::-webkit-scrollbar-track,
         .modal-content::-webkit-scrollbar-track,
         #final-scene::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
         }
 
         .final-message::-webkit-scrollbar-thumb,
         .modal-content::-webkit-scrollbar-thumb,
         #final-scene::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
+            background: linear-gradient(180deg, #ff6b9d, #c780fa);
             border-radius: 10px;
+            transition: all 0.3s ease;
         }
 
-        /* Animations */
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
+        .final-message::-webkit-scrollbar-thumb:hover,
+        .modal-content::-webkit-scrollbar-thumb:hover,
+        #final-scene::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #ff1493, #9370db);
         }
 
-        @keyframes pulse-slow {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        /* LEGENDARY ANIMATIONS */
+        @keyframes cosmic-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
         }
 
-        @keyframes pulse-glow {
-            0%, 100% { 
-                box-shadow: 0 0 40px currentColor, 0 0 80px currentColor;
-                filter: brightness(1);
-            }
-            50% { 
-                box-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
-                filter: brightness(1.2);
-            }
+        @keyframes slide-in-bounce {
+            0% { transform: translateX(100px); opacity: 0; }
+            60% { transform: translateX(-10px); }
+            80% { transform: translateX(5px); }
+            100% { transform: translateX(0); opacity: 1; }
         }
 
-        @keyframes star-burst {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(5); opacity: 0; }
+        @keyframes twinkle-advanced {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
         }
 
-        @keyframes fade-in {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        @keyframes text-glow {
+            0%, 100% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+            50% { text-shadow: 0 0 40px rgba(255, 255, 255, 0.8), 0 0 60px rgba(255, 255, 255, 0.6); }
         }
 
-        @keyframes fade-in-up {
-            from { opacity: 0; transform: translateY(20px); }
+        @keyframes fade-in-down {
+            from { opacity: 0; transform: translateY(-50px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes scale-in {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+        @keyframes fade-in-up-scale {
+            from { opacity: 0; transform: translateY(30px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        @keyframes ping-slow {
+        @keyframes star-glow-intense {
+            0%, 100% { 
+                box-shadow: 0 0 60px rgba(255, 215, 0, 1),
+                            0 0 120px rgba(255, 215, 0, 0.8),
+                            0 0 180px rgba(255, 215, 0, 0.6);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 80px rgba(255, 215, 0, 1),
+                            0 0 160px rgba(255, 215, 0, 0.9),
+                            0 0 240px rgba(255, 215, 0, 0.7);
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes pulse-ring {
             0% { transform: scale(1); opacity: 1; }
             100% { transform: scale(1.5); opacity: 0; }
         }
 
-        /* Mobile Responsive */
+        @keyframes star-burst-epic {
+            0% { transform: scale(1); opacity: 1; }
+            30% { transform: scale(1.2); }
+            100% { transform: scale(8); opacity: 0; }
+        }
+
+        @keyframes text-shimmer {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+
+        @keyframes sun-pulse {
+            0%, 100% { 
+                transform: translate(-50%, -50%) scale(1);
+                box-shadow: 0 0 80px rgba(255, 215, 0, 1),
+                            0 0 140px rgba(255, 215, 0, 0.8),
+                            0 0 200px rgba(255, 165, 0, 0.6);
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.1);
+                box-shadow: 0 0 100px rgba(255, 215, 0, 1),
+                            0 0 180px rgba(255, 215, 0, 0.9),
+                            0 0 260px rgba(255, 165, 0, 0.7);
+            }
+        }
+
+        @keyframes sun-rays {
+            0% { transform: rotate(0deg); opacity: 1; }
+            100% { transform: rotate(360deg); opacity: 1; }
+        }
+
+        @keyframes float-orbit {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-15px) rotate(5deg); }
+            75% { transform: translateY(-15px) rotate(-5deg); }
+        }
+
+        @keyframes planet-shine {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse-text {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        @keyframes rotate-ring {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes eternal-glow {
+            0%, 100% { 
+                box-shadow: 0 0 60px rgba(199, 128, 250, 1),
+                            0 0 100px rgba(255, 107, 157, 0.8),
+                            0 0 140px rgba(78, 205, 196, 0.6);
+            }
+            50% { 
+                box-shadow: 0 0 80px rgba(199, 128, 250, 1),
+                            0 0 130px rgba(255, 107, 157, 0.9),
+                            0 0 180px rgba(78, 205, 196, 0.7);
+            }
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes star-rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fade-pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes modal-fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes modal-scale-in {
+            from { opacity: 0; transform: scale(0.8) translateY(50px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes planet-modal-glow {
+            0%, 100% { 
+                box-shadow: 0 0 50px currentColor, 0 0 80px currentColor;
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 70px currentColor, 0 0 110px currentColor;
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes heart-beat-intense {
+            0%, 100% { transform: scale(1); }
+            10% { transform: scale(1.1); }
+            20% { transform: scale(1); }
+            30% { transform: scale(1.05); }
+            40% { transform: scale(1); }
+        }
+
+        @keyframes heart-glow-pulse {
+            0%, 100% { 
+                filter: drop-shadow(0 0 40px #ff6b9d) drop-shadow(0 0 80px #ff1493);
+            }
+            50% { 
+                filter: drop-shadow(0 0 60px #ff6b9d) drop-shadow(0 0 120px #ff1493);
+            }
+        }
+
+        @keyframes heart-ping-slow {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+        @keyframes float-heart {
+            0% { 
+                transform: translateY(100vh) rotate(0deg); 
+                opacity: 0; 
+            }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { 
+                transform: translateY(-100px) rotate(360deg); 
+                opacity: 0; 
+            }
+        }
+
+        @keyframes float-particle {
+            0% { 
+                transform: translate(0, 0) scale(0); 
+                opacity: 0; 
+            }
+            10% { opacity: 1; }
+            50% { 
+                transform: translate(var(--tx), var(--ty)) scale(1); 
+                opacity: 0.8; 
+            }
+            90% { opacity: 1; }
+            100% { 
+                transform: translate(calc(var(--tx) * 2), calc(var(--ty) * 2)) scale(0); 
+                opacity: 0; 
+            }
+        }
+
+        /* Mobile Responsive - OPTIMIZED */
         @media (max-width: 768px) {
-            #void-scene h1 { font-size: 1.8rem; }
-            #void-scene p { font-size: 1rem; }
-            #birth-scene h1 { font-size: 2rem; }
-            .center-star { width: 150px; height: 150px; }
-            .sun { width: 80px; height: 80px; }
-            .sun-label { transform: translate(-50%, 100px); }
+            #void-scene h1 { font-size: 2rem; letter-spacing: 2px; }
+            #void-scene p { font-size: 1.1rem; }
+            #birth-scene h1 { font-size: 2.2rem; letter-spacing: 2px; }
+            .center-star { width: 180px; height: 180px; }
+            
+            .sun { width: 100px; height: 100px; }
+            .sun-label { 
+                transform: translate(-50%, 120px);
+                font-size: 1.1rem;
+            }
             
             .planet { 
-                width: 70px; 
-                height: 70px;
+                width: 75px; 
+                height: 75px;
                 border-width: 3px;
             }
             
             .eternal-star { 
-                width: 90px; 
-                height: 90px;
+                width: 95px; 
+                height: 95px;
                 top: 10%;
                 right: 5%;
             }
             
             .eternal-label {
-                font-size: 0.9rem;
-                bottom: -30px;
+                font-size: 0.95rem;
+                bottom: -35px;
             }
             
             .modal-content { 
-                padding: 30px 20px;
-                border-radius: 20px;
+                padding: 35px 25px;
+                border-radius: 30px;
             }
             
-            .modal-content h2 { font-size: 1.8rem; }
-            .modal-content .message { font-size: 1rem; }
-            .modal-content .memory { font-size: 0.9rem; }
+            .modal-planet {
+                width: 110px;
+                height: 110px;
+            }
+            
+            .modal-content h2 { font-size: 2rem; }
+            .modal-content .message { font-size: 1.05rem; line-height: 1.8; }
+            .modal-content .memory { font-size: 0.95rem; }
             
             #final-scene h1 { 
-                font-size: 1.5rem;
-                margin-bottom: 20px;
+                font-size: 1.6rem;
+                margin-bottom: 25px;
+                letter-spacing: 1px;
             }
             
             #final-scene h2 { 
-                font-size: 2rem;
-                margin-bottom: 30px;
+                font-size: 2.2rem;
+                margin-bottom: 35px;
+                letter-spacing: 2px;
             }
             
             .final-message { 
-                padding: 25px 20px;
-                border-radius: 20px;
+                padding: 30px 25px;
+                border-radius: 30px;
                 max-height: 50vh;
             }
             
             .final-message p { 
-                font-size: 1rem;
-                margin-bottom: 15px;
+                font-size: 1.05rem;
+                margin-bottom: 18px;
+                line-height: 1.8;
             }
             
             .final-message .signature {
-                font-size: 1.2rem;
-                margin-top: 20px;
+                font-size: 1.4rem;
+                margin-top: 25px;
             }
             
             .heart-container { 
-                width: 120px; 
-                height: 120px;
-                margin-bottom: 30px;
+                width: 150px; 
+                height: 150px;
+                margin-bottom: 35px;
             }
             
             .instruction {
-                font-size: 0.9rem;
-                bottom: 20px;
+                font-size: 0.95rem;
+                bottom: 30px;
             }
 
             .btn {
-                padding: 12px 30px;
+                padding: 14px 35px;
                 font-size: 1rem;
+                letter-spacing: 1px;
             }
+
+            .ring-1 { width: 200px; height: 200px; }
+            .ring-2 { width: 320px; height: 320px; }
+            .ring-3 { width: 440px; height: 440px; }
         }
 
         @media (max-width: 480px) {
-            .planet {
-                width: 60px;
-                height: 60px;
-            }
-            
-            .eternal-star {
-                width: 75px;
-                height: 75px;
-            }
+            .planet { width: 65px; height: 65px; }
+            .eternal-star { width: 85px; height: 85px; }
+            #void-scene h1 { font-size: 1.6rem; }
+            #birth-scene h1 { font-size: 1.8rem; }
+            .center-star { width: 150px; height: 150px; }
         }
     </style>
 </head>
 <body>
+    <div class="cosmic-bg"></div>
     <canvas id="canvas"></canvas>
+    <div class="particles" id="particles"></div>
 
     <!-- Audio Toggle -->
     <button id="audioToggle">🔊</button>
@@ -602,24 +1059,29 @@
     <!-- Void Scene -->
     <div id="void-scene" class="scene active">
         <div class="void-stars" id="voidStars"></div>
-        <div>
-            <h1>Jab tum nhi the saraaa♥️...</h1>
-            <p>Har taraf shanti thi.</p>
-            <button class="btn" onclick="startJourney()">Begin the Journey</button>
+        <div class="void-content">
+            <h1>Before there was us...</h1>
+            <p>there was silence.</p>
+            <button class="btn" onclick="startJourney()"><span>Begin the Journey</span></button>
         </div>
     </div>
 
     <!-- Birth Scene -->
     <div id="birth-scene" class="scene">
-        <div>
+        <div class="birth-content">
             <div class="center-star" id="birthStar"></div>
-            <h1>saraaa♥️, Phir tum aaye.</h1>
+            <h1>Then, you appeared.</h1>
         </div>
     </div>
 
     <!-- Universe Scene -->
     <div id="universe-scene" class="scene">
         <div class="universe-container">
+            <!-- Orbital Rings -->
+            <div class="orbital-ring ring-1"></div>
+            <div class="orbital-ring ring-2"></div>
+            <div class="orbital-ring ring-3"></div>
+            
             <div class="sun"></div>
             <div class="sun-label">You</div>
             
@@ -642,12 +1104,13 @@
             <h2 id="modalTitle"></h2>
             <p class="message" id="modalMessage"></p>
             <p class="memory" id="modalMemory"></p>
-            <button class="btn" onclick="closeModal()">Continue Journey</button>
+            <button class="btn" onclick="closeModal()"><span>Continue Journey</span></button>
         </div>
     </div>
 
     <!-- Final Scene -->
     <div id="final-scene" class="scene">
+        <div class="floating-hearts" id="floatingHearts"></div>
         <div>
             <div class="heart-container">
                 <svg class="heart" viewBox="0 0 24 24" fill="#ff6b9d">
@@ -668,7 +1131,7 @@
                 <p>This universe I built for you will expand forever, just like my love for you grows with every passing moment.</p>
                 <p class="signature">My sun. My forever. My everything. ☀️💫</p>
             </div>
-            <button class="btn" onclick="replay()">🔄 Orbit Forever</button>
+            <button class="btn" onclick="replay()"><span>🔄 Orbit Forever</span></button>
         </div>
     </div>
 
@@ -720,7 +1183,7 @@
         let animationFrame;
         let audioContext;
 
-        // Canvas setup
+        // Canvas setup - Enhanced starfield
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         let stars = [];
@@ -733,29 +1196,39 @@
 
         function initStars() {
             stars = [];
-            const starCount = window.innerWidth < 768 ? 150 : 300;
+            const starCount = window.innerWidth < 768 ? 200 : 400;
             for (let i = 0; i < starCount; i++) {
                 stars.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    size: Math.random() * 2,
+                    size: Math.random() * 2.5,
                     opacity: Math.random(),
-                    speed: Math.random() * 0.5
+                    speed: Math.random() * 0.5,
+                    twinkleSpeed: Math.random() * 0.02 + 0.01
                 });
             }
         }
 
         function animateStars() {
-            ctx.fillStyle = 'rgba(10, 10, 25, 0.1)';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             stars.forEach(star => {
-                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                // Create glow effect
+                const gradient = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, star.size * 2);
+                gradient.addColorStop(0, `rgba(255, 255, 255, ${star.opacity})`);
+                gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                
+                ctx.fillStyle = gradient;
                 ctx.beginPath();
-                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.arc(star.x, star.y, star.size * 2, 0, Math.PI * 2);
                 ctx.fill();
 
-                star.opacity = Math.sin(Date.now() * 0.001 + star.x) * 0.5 + 0.5;
+                // Twinkling effect
+                star.opacity += star.twinkleSpeed;
+                if (star.opacity > 1 || star.opacity < 0.2) {
+                    star.twinkleSpeed *= -1;
+                }
             });
 
             animationFrame = requestAnimationFrame(animateStars);
@@ -766,18 +1239,35 @@
         resizeCanvas();
         animateStars();
 
-        // Create void stars
+        // Create void stars with better distribution
         const voidStars = document.getElementById('voidStars');
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 30; i++) {
             const star = document.createElement('div');
             star.className = 'void-star';
             star.style.left = Math.random() * 100 + '%';
             star.style.top = Math.random() * 100 + '%';
-            star.style.animationDelay = Math.random() * 3 + 's';
+            star.style.animationDelay = Math.random() * 4 + 's';
+            star.style.animationDuration = (Math.random() * 2 + 3) + 's';
             voidStars.appendChild(star);
         }
 
-        // Generate planets
+        // Create floating particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.width = (Math.random() * 3 + 1) + 'px';
+            particle.style.height = particle.style.width;
+            particle.style.setProperty('--tx', (Math.random() - 0.5) * 200 + 'px');
+            particle.style.setProperty('--ty', (Math.random() - 0.5) * 200 + 'px');
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Generate planets with enhanced styling
         const planetsContainer = document.getElementById('planetsContainer');
         planets.forEach((planet, idx) => {
             const planetEl = document.createElement('div');
@@ -786,15 +1276,29 @@
             planetEl.style.top = planet.y + '%';
             planetEl.style.backgroundColor = planet.color;
             planetEl.style.animationDelay = (idx * 0.5) + 's';
+            planetEl.style.color = planet.color;
             planetEl.onclick = () => openPlanet(planet);
 
             const label = document.createElement('div');
             label.className = 'planet-label';
             label.textContent = planet.name;
+            label.style.color = planet.color;
             planetEl.appendChild(label);
 
             planetsContainer.appendChild(planetEl);
         });
+
+        // Create floating hearts for final scene
+        const floatingHearts = document.getElementById('floatingHearts');
+        for (let i = 0; i < 15; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.textContent = '💖';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDelay = Math.random() * 15 + 's';
+            heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            floatingHearts.appendChild(heart);
+        }
 
         // Scene transitions
         function showScene(sceneName) {
@@ -824,13 +1328,16 @@
 
             setTimeout(() => {
                 showScene('universe');
-            }, 3000);
+            }, 3500);
         }
 
         function openPlanet(planet) {
             const modal = document.getElementById('planet-modal');
-            document.getElementById('modalPlanetIcon').style.backgroundColor = planet.color;
+            const modalPlanet = document.getElementById('modalPlanetIcon');
+            modalPlanet.style.backgroundColor = planet.color;
+            modalPlanet.style.color = planet.color;
             document.getElementById('modalTitle').textContent = planet.name;
+            document.getElementById('modalTitle').style.color = planet.color;
             document.getElementById('modalMessage').textContent = planet.message;
             document.getElementById('modalMemory').textContent = planet.memory;
             modal.classList.add('show');
@@ -856,7 +1363,7 @@
             birthStar.classList.remove('burst');
         }
 
-        // Enhanced Audio with louder volume
+        // Enhanced Audio with louder volume and better quality
         function initAudio() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -866,7 +1373,7 @@
         function playHeartbeat() {
             if (!audioContext) return;
             
-            // First beat (louder)
+            // First beat (louder and deeper)
             const osc1 = audioContext.createOscillator();
             const gain1 = audioContext.createGain();
             
@@ -874,13 +1381,13 @@
             gain1.connect(audioContext.destination);
             
             osc1.frequency.value = 80;
-            gain1.gain.setValueAtTime(0.4, audioContext.currentTime); // Increased from 0.1 to 0.4
+            gain1.gain.setValueAtTime(0.4, audioContext.currentTime);
             gain1.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
             
             osc1.start(audioContext.currentTime);
             osc1.stop(audioContext.currentTime + 0.3);
 
-            // Second beat (slightly quieter)
+            // Second beat
             setTimeout(() => {
                 const osc2 = audioContext.createOscillator();
                 const gain2 = audioContext.createGain();
@@ -889,7 +1396,7 @@
                 gain2.connect(audioContext.destination);
                 
                 osc2.frequency.value = 70;
-                gain2.gain.setValueAtTime(0.3, audioContext.currentTime); // Increased from 0.08 to 0.3
+                gain2.gain.setValueAtTime(0.3, audioContext.currentTime);
                 gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.25);
                 
                 osc2.start(audioContext.currentTime);
@@ -906,7 +1413,6 @@
             this.textContent = audioEnabled ? '🔊' : '🔇';
 
             if (audioEnabled) {
-                // Resume audio context if suspended (required for mobile)
                 if (audioContext.state === 'suspended') {
                     audioContext.resume();
                 }
