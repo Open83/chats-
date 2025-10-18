@@ -1,867 +1,389 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LoveTime Galaxia | A Cosmic Love Story</title>
-    <link rel="icon" type="image/x-icon" href="https://static.photos/blue/200x200/42">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;500;700&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            overflow-x: hidden;
-            background: #000;
-        }
-        
-        .font-serif {
-            font-family: 'Playfair Display', serif;
-        }
-        
-        /* LEGENDARY ANIMATED NEBULA BACKGROUND */
-        .legendary-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
-            z-index: 0;
-            overflow: hidden;
-        }
-        
-        /* Multiple Layered Gradients */
-        .gradient-layer-1 {
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            top: -50%;
-            left: -50%;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(255, 0, 128, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 30%, rgba(0, 242, 254, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 50% 80%, rgba(138, 43, 226, 0.15) 0%, transparent 50%);
-            animation: drift 25s ease-in-out infinite;
-        }
-        
-        .gradient-layer-2 {
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            top: -50%;
-            left: -50%;
-            background: 
-                radial-gradient(circle at 70% 60%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 30% 40%, rgba(147, 51, 234, 0.12) 0%, transparent 50%),
-                radial-gradient(circle at 60% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
-            animation: drift 30s ease-in-out infinite reverse;
-        }
-        
-        @keyframes drift {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33% { transform: translate(-5%, 5%) rotate(120deg); }
-            66% { transform: translate(5%, -5%) rotate(240deg); }
-        }
-        
-        /* Cosmic Particles */
-        .cosmic-particle {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(0.5px);
-            animation: floatCosmic linear infinite;
-        }
-        
-        @keyframes floatCosmic {
-            0% {
-                transform: translateY(100vh) translateX(0) scale(0);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.8;
-            }
-            50% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 0.8;
-            }
-            100% {
-                transform: translateY(-20vh) translateX(var(--drift)) scale(1.5);
-                opacity: 0;
-            }
-        }
-        
-        /* Glowing Orbs */
-        .glow-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(40px);
-            animation: orbFloat 20s ease-in-out infinite;
-            opacity: 0.4;
-        }
-        
-        @keyframes orbFloat {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            25% { transform: translate(50px, -80px) scale(1.2); }
-            50% { transform: translate(-30px, -120px) scale(0.9); }
-            75% { transform: translate(70px, -60px) scale(1.1); }
-        }
-        
-        /* Star Field with Depth */
-        .star-field {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-        }
-        
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
-            animation: twinkle var(--duration) infinite ease-in-out;
-        }
-        
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.2; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.3); }
-        }
-        
-        /* Shooting Stars - More Frequent */
-        .shooting-star {
-            position: absolute;
-            height: 2px;
-            background: linear-gradient(90deg, #fff, transparent);
-            border-radius: 50%;
-            box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.9);
-            animation: shoot 2s linear;
-        }
-        
-        @keyframes shoot {
-            0% {
-                transform: translateX(0) translateY(0) rotate(-45deg);
-                opacity: 1;
-                width: 0;
-            }
-            50% {
-                width: 100px;
-                opacity: 1;
-            }
-            100% {
-                transform: translateX(-400px) translateY(400px) rotate(-45deg);
-                opacity: 0;
-                width: 100px;
-            }
-        }
-        
-        /* Constellation Lines */
-        .constellation-line {
-            position: absolute;
-            background: linear-gradient(90deg, transparent, rgba(94, 234, 212, 0.3), transparent);
-            height: 1px;
-            transform-origin: left center;
-            animation: drawLine 3s ease-in-out infinite;
-        }
-        
-        @keyframes drawLine {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 1; }
-        }
-        
-        /* Magical Portal Glow */
-        .portal-glow {
-            position: relative;
-            box-shadow: 
-                0 0 80px rgba(94, 234, 212, 0.6),
-                0 0 120px rgba(139, 92, 246, 0.4),
-                0 0 160px rgba(236, 72, 153, 0.3),
-                inset 0 0 80px rgba(94, 234, 212, 0.2);
-            animation: portalPulse 4s infinite ease-in-out;
-        }
-        
-        .portal-glow::before {
-            content: '';
-            position: absolute;
-            inset: -5px;
-            border-radius: 50%;
-            background: conic-gradient(
-                from 0deg,
-                transparent 0deg 90deg,
-                rgba(94, 234, 212, 0.5) 90deg 180deg,
-                transparent 180deg 270deg,
-                rgba(236, 72, 153, 0.5) 270deg 360deg
-            );
-            animation: rotate 4s linear infinite;
-            filter: blur(10px);
-            z-index: -1;
-        }
-        
-        @keyframes portalPulse {
-            0%, 100% { 
-                box-shadow: 
-                    0 0 80px rgba(94, 234, 212, 0.6),
-                    0 0 120px rgba(139, 92, 246, 0.4),
-                    0 0 160px rgba(236, 72, 153, 0.3),
-                    inset 0 0 80px rgba(94, 234, 212, 0.2);
-            }
-            50% { 
-                box-shadow: 
-                    0 0 120px rgba(94, 234, 212, 0.8),
-                    0 0 160px rgba(139, 92, 246, 0.6),
-                    0 0 200px rgba(236, 72, 153, 0.5),
-                    inset 0 0 100px rgba(94, 234, 212, 0.4);
-            }
-        }
-        
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Timeline Dots Enhanced */
-        .timeline-dot {
-            position: absolute;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(94,234,212,1) 0%, rgba(236,72,153,1) 100%);
-            box-shadow: 
-                0 0 20px rgba(94, 234, 212, 0.8),
-                0 0 40px rgba(236, 72, 153, 0.4);
-            cursor: pointer;
-            transition: all 0.4s ease;
-            z-index: 10;
-        }
-        
-        .timeline-dot::before {
-            content: '';
-            position: absolute;
-            inset: -3px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, transparent, rgba(94, 234, 212, 0.5));
-            animation: rotate 3s linear infinite;
-        }
-        
-        .timeline-dot:hover {
-            transform: scale(1.6);
-            box-shadow: 
-                0 0 30px rgba(94, 234, 212, 1),
-                0 0 60px rgba(236, 72, 153, 0.6);
-        }
-        
-        .timeline-dot.active {
-            transform: scale(2);
-            box-shadow: 
-                0 0 40px rgba(94, 234, 212, 1),
-                0 0 80px rgba(236, 72, 153, 0.8);
-        }
-        
-        /* Message Bubbles with Glow */
-        .message-bubble {
-            backdrop-filter: blur(20px) saturate(180%);
-            background: rgba(10, 0, 30, 0.5);
-            border: 1px solid rgba(94, 234, 212, 0.3);
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .message-bubble::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(94, 234, 212, 0.1), transparent, rgba(236, 72, 153, 0.1));
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-        
-        .message-bubble:hover {
-            transform: translateY(-5px);
-            box-shadow: 
-                0 15px 40px rgba(94, 234, 212, 0.3),
-                0 5px 20px rgba(236, 72, 153, 0.2);
-            border-color: rgba(94, 234, 212, 0.6);
-        }
-        
-        .message-bubble:hover::before {
-            opacity: 1;
-        }
-        
-        /* Era Display Effects */
-        .era-golden { 
-            background: linear-gradient(135deg, rgba(255,215,0,0.15) 0%, rgba(255,140,0,0.25) 100%);
-            box-shadow: 0 0 60px rgba(255,215,0,0.3);
-            border: 1px solid rgba(255,215,0,0.4);
-        }
-        
-        .era-night { 
-            background: linear-gradient(135deg, rgba(59,130,246,0.15) 0%, rgba(139,92,246,0.25) 100%);
-            box-shadow: 0 0 60px rgba(139,92,246,0.3);
-            border: 1px solid rgba(139,92,246,0.4);
-        }
-        
-        .era-starburst { 
-            background: linear-gradient(135deg, rgba(236,72,153,0.15) 0%, rgba(219,39,119,0.25) 100%);
-            box-shadow: 0 0 60px rgba(236,72,153,0.3);
-            border: 1px solid rgba(236,72,153,0.4);
-        }
-        
-        /* Glass Morphism Premium */
-        .glass {
-            backdrop-filter: blur(30px) saturate(200%);
-            background: rgba(5, 0, 20, 0.6);
-            border: 1px solid rgba(94, 234, 212, 0.2);
-            box-shadow: 
-                0 8px 32px 0 rgba(94, 234, 212, 0.1),
-                inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
-        }
-        
-        .hidden {
-            display: none !important;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .text-4xl { font-size: 2rem; }
-            .text-6xl { font-size: 3rem; }
-            .text-xl { font-size: 1.125rem; }
-            .max-w-4xl { max-width: 90%; }
-            .w-64 { width: 12rem; }
-            .h-64 { height: 12rem; }
-        }
-    </style>
-</head>
-<body class="bg-black text-white">
-    <!-- LEGENDARY BACKGROUND -->
-    <div class="legendary-bg">
-        <div class="gradient-layer-1"></div>
-        <div class="gradient-layer-2"></div>
-        <div id="glow-orbs"></div>
-        <div class="star-field" id="star-field"></div>
-        <div id="cosmic-particles"></div>
-        <div id="shooting-stars"></div>
-        <div id="constellation-lines"></div>
-    </div>
+import React, { useState, useEffect, useRef } from 'react';
+import { Heart, Volume2, VolumeX, RotateCcw } from 'lucide-react';
 
-    <!-- Main Container -->
-    <div id="app" class="relative z-10">
-        <!-- Portal Screen -->
-        <div id="portal-screen" class="min-h-screen flex flex-col items-center justify-center p-4">
-            <div class="max-w-4xl mx-auto text-center px-6 py-12 glass rounded-xl">
-                <h1 class="text-4xl md:text-6xl font-serif mb-6 bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">LoveTime Galaxia</h1>
-                <p class="text-xl md:text-2xl mb-8 font-light text-cyan-100">A cosmic journey through our love story</p>
-                
-                <div class="my-12 flex justify-center">
-                    <div id="portal-key" class="portal-glow w-64 h-64 rounded-full bg-gradient-to-br from-cyan-500 via-purple-500 to-pink-500 flex items-center justify-center cursor-pointer transform transition-all hover:scale-105">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-bounce">
-                            <path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"></path>
-                            <path d="m21 2-9.6 9.6"></path>
-                            <circle cx="7.5" cy="15.5" r="5.5"></circle>
-                        </svg>
-                    </div>
-                </div>
+const EternalUniverse = () => {
+  const [scene, setScene] = useState('void');
+  const [audioEnabled, setAudioEnabled] = useState(false);
+  const [selectedPlanet, setSelectedPlanet] = useState(null);
+  const [starBurst, setStarBurst] = useState(false);
+  const canvasRef = useRef(null);
+  const audioContextRef = useRef(null);
 
-                <p class="text-lg md:text-xl text-gray-300 mb-2">"Every moment we shared became a star in our universe"</p>
-                <p class="text-sm text-gray-400">Click the portal key to begin</p>
-            </div>
-        </div>
+  // Love story data - CUSTOMIZE THIS
+  const planets = [
+    {
+      id: 'first-spark',
+      name: 'First Spark',
+      color: '#FF6B9D',
+      x: 30,
+      y: 25,
+      message: 'The moment our eyes met, time stopped. It was just you and me in a crowded world.',
+      memory: 'Remember how nervous I was? Your smile made everything feel right.'
+    },
+    {
+      id: 'moments',
+      name: 'Our Moments',
+      color: '#C780FA',
+      x: 70,
+      y: 35,
+      message: 'Every laugh, every adventure, every quiet moment. They all led me deeper into you.',
+      memory: 'From midnight talks to silly fights, every second with you is my favorite story.'
+    },
+    {
+      id: 'dreams',
+      name: 'Dreams Together',
+      color: '#4ECDC4',
+      x: 50,
+      y: 70,
+      message: 'I see us traveling the world, building a home, creating a life that feels like forever.',
+      memory: 'Every dream I have now has you in it. You\'re my future.'
+    },
+    {
+      id: 'my-world',
+      name: 'My World',
+      color: '#FFE66D',
+      x: 20,
+      y: 60,
+      message: 'You\'re not just in my life. You ARE my life. My reason, my peace, my everything.',
+      memory: 'Before you, I was existing. With you, I\'m alive.'
+    }
+  ];
 
-        <!-- Time Machine Screen -->
-        <div id="timemachine-screen" class="hidden min-h-screen p-4 pt-20">
-            <nav class="fixed top-0 left-0 w-full z-50 p-4 glass border-b border-cyan-500/20">
-                <div class="container mx-auto flex justify-between items-center">
-                    <button id="back-to-portal" class="text-cyan-300 hover:text-cyan-100 transition-colors flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
-                            <polyline points="15 18 9 12 15 6"></polyline>
-                        </svg>
-                        Back to Portal
-                    </button>
-                    <span class="text-cyan-100 font-light hidden md:block">"Our timeless love story"</span>
-                </div>
-            </nav>
+  // Starfield animation
+  useEffect(() => {
+    if (scene === 'void' || !canvasRef.current) return;
 
-            <div class="flex flex-col items-center justify-center">
-                <div class="max-w-4xl w-full text-center mb-12">
-                    <h2 class="text-3xl md:text-5xl font-serif mb-4 bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">Time Machine</h2>
-                    <p class="text-lg text-cyan-100 font-light max-w-2xl mx-auto">Click on any moment to relive that chapter of our story</p>
-                </div>
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    let animationId;
+    let stars = [];
 
-                <div class="relative w-full max-w-xl aspect-square my-8">
-                    <div id="time-machine-dial" class="relative w-full h-full rounded-full border-2 border-cyan-500/30 shadow-lg shadow-cyan-500/20">
-                        <!-- Timeline dots will be added dynamically -->
-                    </div>
-                </div>
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initStars();
+    };
 
-                <div id="era-display" class="w-full max-w-2xl p-8 rounded-xl glass transition-all duration-1000">
-                    <h3 class="text-2xl md:text-3xl font-serif mb-4 text-cyan-300" id="era-title">Select a moment in time</h3>
-                    <p class="text-gray-300" id="era-description">Click on any glowing dot to relive that chapter of our story</p>
-                    <div class="mt-6 flex justify-center">
-                        <button id="start-journey-btn" class="px-6 py-3 bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-700 hover:to-purple-700 rounded-full flex items-center transition-all shadow-lg shadow-cyan-500/30">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
-                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                            </svg>
-                            Start Journey
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Universe Screen -->
-        <div id="universe-screen" class="hidden min-h-screen">
-            <nav class="fixed top-0 left-0 w-full z-50 p-4 glass border-b border-cyan-500/20 flex justify-between">
-                <button id="back-to-timemachine" class="text-cyan-300 hover:text-cyan-100 transition-colors flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
-                        <polyline points="15 18 9 12 15 6"></polyline>
-                    </svg>
-                    Back to Time Machine
-                </button>
-                <div class="text-cyan-100 font-light hidden md:block">
-                    <span id="current-date">Summer 2023</span>
-                </div>
-            </nav>
-
-            <div class="container mx-auto px-4 pt-24 pb-16 relative z-10">
-                <div class="text-center mb-12">
-                    <h1 class="text-4xl md:text-6xl font-serif mb-4 bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-transparent" id="universe-title">Our Summer Adventures</h1>
-                    <p class="text-xl text-cyan-100 max-w-2xl mx-auto">Messages from this chapter of our story</p>
-                </div>
-
-                <div id="messages-container" class="max-w-3xl mx-auto space-y-8">
-                    <!-- Messages will be populated dynamically -->
-                </div>
-
-                <div class="flex justify-between mt-16 max-w-3xl mx-auto">
-                    <button id="prev-chapter" class="px-6 py-3 bg-gradient-to-r from-cyan-600/50 to-purple-600/50 hover:from-cyan-700/50 hover:to-purple-700/50 rounded-full flex items-center transition-all">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
-                            <line x1="19" y1="12" x2="5" y2="12"></line>
-                            <polyline points="12 19 5 12 12 5"></polyline>
-                        </svg>
-                        Previous
-                    </button>
-                    <button id="next-chapter" class="px-6 py-3 bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-700 hover:to-purple-700 rounded-full flex items-center transition-all shadow-lg shadow-cyan-500/30">
-                        Next
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Forever Screen -->
-        <div id="forever-screen" class="hidden min-h-screen flex flex-col items-center justify-center p-4 text-center">
-            <div class="max-w-2xl mx-auto glass p-8 md:p-12 rounded-xl mb-12">
-                <h1 class="text-3xl md:text-5xl font-serif mb-8 bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">Dear Love,</h1>
-                <div id="final-letter" class="text-lg md:text-xl leading-relaxed text-left space-y-6">
-                    <!-- Letter content will be typed out -->
-                </div>
-            </div>
-
-            <button id="restart-btn" class="px-8 py-4 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 hover:from-cyan-600 hover:via-purple-600 hover:to-pink-600 rounded-full text-xl font-medium flex items-center transition-all transform hover:scale-105 shadow-lg shadow-purple-500/40">
-                Begin Our Next Chapter
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-3">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-            </button>
-        </div>
-    </div>
-
-    <script>
-        // App State
-        const appState = {
-            currentScreen: 'portal',
-            currentTimeline: 0
-        };
-
-        // Timeline Data
-        const timelineData = [
-            { 
-                id: 1, 
-                title: "First Connection", 
-                date: "2023-01-15", 
-                era: "golden", 
-                description: "The day our stars first aligned",
-                messages: [
-                    { sender: "You", time: "Jan 15, 2023 · 2:30 PM", text: "Hey! I noticed your profile and thought you seemed really interesting. How's your day going?" },
-                    { sender: "Partner", time: "Jan 15, 2023 · 3:15 PM", text: "Hi! That's so sweet of you to reach out. My day just got a lot better 😊" }
-                ]
-            },
-            { 
-                id: 2, 
-                title: "First Date", 
-                date: "2023-02-20", 
-                era: "golden", 
-                description: "Moonlight and laughter under city lights",
-                messages: [
-                    { sender: "You", time: "Feb 20, 2023 · 9:45 PM", text: "Tonight was amazing. I can't remember the last time I laughed so hard!" },
-                    { sender: "Partner", time: "Feb 20, 2023 · 10:02 PM", text: "Me too! I never wanted it to end. When can I see you again?" }
-                ]
-            },
-            { 
-                id: 3, 
-                title: "First I Love You", 
-                date: "2023-04-10", 
-                era: "starburst", 
-                description: "Three words that changed everything",
-                messages: [
-                    { sender: "You", time: "Apr 10, 2023 · 11:47 PM", text: "I need to tell you something... I love you. I've felt it for a while now." },
-                    { sender: "Partner", time: "Apr 10, 2023 · 11:49 PM", text: "I love you too! I've been wanting to say it but was so nervous ❤️" }
-                ]
-            },
-            { 
-                id: 4, 
-                title: "Summer Adventures", 
-                date: "2023-06-15", 
-                era: "golden", 
-                description: "Endless days and warm memories",
-                messages: [
-                    { sender: "You", time: "Jun 20, 2023 · 3:42 PM", text: "Remember our beach picnic yesterday? I can't stop thinking about how you looked with the sunset behind you." },
-                    { sender: "Partner", time: "Jul 4, 2023 · 11:15 AM", text: "I love you more than yesterday but less than tomorrow ❤️" },
-                    { sender: "You", time: "Jul 15, 2023 · 9:27 PM", text: "Today was perfect. Hiking, finding that hidden waterfall, and just being with you." }
-                ]
-            }
-        ];
-
-        // Initialize LEGENDARY Background
-        function initLegendaryBackground() {
-            // Create Glowing Orbs
-            const orbsContainer = document.getElementById('glow-orbs');
-            const orbColors = [
-                'rgba(94, 234, 212, 0.4)',
-                'rgba(236, 72, 153, 0.4)',
-                'rgba(139, 92, 246, 0.4)',
-                'rgba(255, 215, 0, 0.4)'
-            ];
-            
-            for (let i = 0; i < 8; i++) {
-                const orb = document.createElement('div');
-                orb.className = 'glow-orb';
-                orb.style.width = `${Math.random() * 300 + 150}px`;
-                orb.style.height = orb.style.width;
-                orb.style.left = `${Math.random() * 100}%`;
-                orb.style.top = `${Math.random() * 100}%`;
-                orb.style.background = orbColors[i % orbColors.length];
-                orb.style.animationDelay = `${Math.random() * 10}s`;
-                orb.style.animationDuration = `${Math.random() * 10 + 15}s`;
-                orbsContainer.appendChild(orb);
-            }
-
-            // Create Star Field
-            const starField = document.getElementById('star-field');
-            for (let i = 0; i < 200; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                const size = Math.random() * 3 + 0.5;
-                star.style.width = `${size}px`;
-                star.style.height = `${size}px`;
-                star.style.left = `${Math.random() * 100}%`;
-                star.style.top = `${Math.random() * 100}%`;
-                star.style.setProperty('--duration', `${Math.random() * 4 + 2}s`);
-                star.style.animationDelay = `${Math.random() * 6}s`;
-                starField.appendChild(star);
-            }
-
-            // Create Cosmic Particles
-            const particlesContainer = document.getElementById('cosmic-particles');
-            for (let i = 0; i < 40; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'cosmic-particle';
-                const size = Math.random() * 4 + 1;
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.background = `radial-gradient(circle, rgba(${Math.random() > 0.5 ? '94,234,212' : '236,72,153'}, 0.8), transparent)`;
-                particle.style.animationDuration = `${Math.random() * 15 + 10}s`;
-                particle.style.animationDelay = `${Math.random() * 5}s`;
-                particle.style.setProperty('--drift', `${Math.random() * 200 - 100}px`);
-                particlesContainer.appendChild(particle);
-            }
-
-            // Create Shooting Stars
-            const shootingStarsContainer = document.getElementById('shooting-stars');
-            setInterval(() => {
-                const star = document.createElement('div');
-                star.className = 'shooting-star';
-                star.style.left = `${Math.random() * 100}%`;
-                star.style.top = `${Math.random() * 50}%`;
-                star.style.width = `${Math.random() * 100 + 50}px`;
-                shootingStarsContainer.appendChild(star);
-                setTimeout(() => star.remove(), 2000);
-            }, 2500);
-
-            // Create Constellation Lines
-            const constellationContainer = document.getElementById('constellation-lines');
-            for (let i = 0; i < 10; i++) {
-                const line = document.createElement('div');
-                line.className = 'constellation-line';
-                line.style.left = `${Math.random() * 100}%`;
-                line.style.top = `${Math.random() * 100}%`;
-                line.style.width = `${Math.random() * 150 + 50}px`;
-                line.style.transform = `rotate(${Math.random() * 360}deg)`;
-                line.style.animationDelay = `${Math.random() * 3}s`;
-                line.style.animationDuration = `${Math.random() * 5 + 3}s`;
-                constellationContainer.appendChild(line);
-            }
-        }
-
-        // Screen Navigation
-        function showScreen(screenName) {
-            ['portal-screen', 'timemachine-screen', 'universe-screen', 'forever-screen'].forEach(id => {
-                document.getElementById(id).classList.add('hidden');
-            });
-            document.getElementById(`${screenName}-screen`).classList.remove('hidden');
-            appState.currentScreen = screenName;
-        }
-
-        // Initialize Timeline
-        function initTimeline() {
-            const timeMachine = document.getElementById('time-machine-dial');
-            timeMachine.innerHTML = '';
-            
-            timelineData.forEach((item, index) => {
-                const angle = (index * (360 / timelineData.length)) * (Math.PI / 180);
-                const radius = 150;
-                const x = radius * Math.cos(angle);
-                const y = radius * Math.sin(angle);
-                
-                const dot = document.createElement('div');
-                dot.className = 'timeline-dot';
-                dot.dataset.id = item.id;
-                dot.style.left = `calc(50% + ${x}px - 9px)`;
-                dot.style.top = `calc(50% + ${y}px - 9px)`;
-                
-                const tooltip = document.createElement('div');
-                tooltip.className = 'absolute -top-10 left-1/2 transform -translate-x-1/2 bg-black/90 px-4 py-2 rounded-lg text-sm whitespace-nowrap pointer-events-none opacity-0 transition-opacity border border-cyan-500/30';
-                tooltip.textContent = item.title;
-                dot.appendChild(tooltip);
-                
-                dot.addEventListener('mouseenter', () => {
-                    tooltip.classList.remove('opacity-0');
-                });
-                dot.addEventListener('mouseleave', () => {
-                    tooltip.classList.add('opacity-0');
-                });
-                
-                dot.addEventListener('click', () => selectTimeline(index));
-                
-                timeMachine.appendChild(dot);
-            });
-            
-            selectTimeline(0);
-        }
-
-        // Select Timeline
-        function selectTimeline(index) {
-            appState.currentTimeline = index;
-            const item = timelineData[index];
-            
-            document.getElementById('era-title').textContent = item.title;
-            document.getElementById('era-description').textContent = item.description;
-            
-            const display = document.getElementById('era-display');
-            display.classList.remove('era-golden', 'era-night', 'era-starburst');
-            display.classList.add(`era-${item.era}`);
-            
-            document.querySelectorAll('.timeline-dot').forEach(dot => {
-                dot.classList.remove('active');
-            });
-            document.querySelector(`.timeline-dot[data-id="${item.id}"]`)?.classList.add('active');
-        }
-
-        // Load Universe Messages
-        function loadUniverseMessages() {
-            const item = timelineData[appState.currentTimeline];
-            document.getElementById('universe-title').textContent = item.title;
-            document.getElementById('current-date').textContent = new Date(item.date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-            
-            const container = document.getElementById('messages-container');
-            container.innerHTML = '';
-            
-            item.messages.forEach((msg, index) => {
-                const bubble = document.createElement('div');
-                bubble.className = 'message-bubble p-6 rounded-xl';
-                
-                const color = msg.sender === "You" ? "blue" : "pink";
-                const gradientClass = msg.sender === "You" ? "from-blue-500 to-cyan-500" : "from-pink-500 to-purple-500";
-                
-                bubble.innerHTML = `
-                    <div class="flex items-start mb-2">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br ${gradientClass} mr-4 flex-shrink-0 shadow-lg"></div>
-                        <div>
-                            <h3 class="font-bold text-cyan-200">${msg.sender}</h3>
-                            <p class="text-sm text-gray-400">${msg.time}</p>
-                        </div>
-                    </div>
-                    <div class="pl-14">
-                        <p class="text-lg text-gray-200">${msg.text}</p>
-                    </div>
-                `;
-                
-                container.appendChild(bubble);
-                
-                setTimeout(() => {
-                    gsap.from(bubble, {
-                        opacity: 0,
-                        y: 30,
-                        duration: 0.6,
-                        ease: "power2.out"
-                    });
-                }, index * 250);
-            });
-        }
-
-        // Type Letter
-        function typeLetter() {
-            const letterContent = [
-                "As I sit here reflecting on our journey together, I realize this is not an ending but a beautiful beginning.",
-                "Every moment we've shared—from our first nervous hello to the comfortable silences we now cherish—has been a star in the constellation of our love.",
-                "I want you to know that my love for you isn't measured in days or years, but in the infinite ways you've changed my life for the better.",
-                "So here's to our next chapter, wherever it may lead. Because with you, every moment is an adventure I want to experience.",
-                "Forever yours,",
-                "❤️"
-            ];
-            
-            const container = document.getElementById('final-letter');
-            container.innerHTML = '';
-            
-            letterContent.forEach((text, index) => {
-                setTimeout(() => {
-                    const p = document.createElement('p');
-                    p.className = 'mb-4 text-gray-200';
-                    p.textContent = text;
-                    container.appendChild(p);
-                    
-                    gsap.from(p, {
-                        opacity: 0,
-                        y: 20,
-                        duration: 0.8,
-                        ease: "power2.out"
-                    });
-                }, index * 1200);
-            });
-        }
-
-        // Event Listeners
-        document.addEventListener('DOMContentLoaded', () => {
-            initLegendaryBackground();
-            
-            // Portal to Time Machine
-            document.getElementById('portal-key').addEventListener('click', () => {
-                gsap.to('#portal-screen', {
-                    opacity: 0,
-                    duration: 1,
-                    onComplete: () => {
-                        showScreen('timemachine');
-                        initTimeline();
-                        gsap.from('#timemachine-screen', { opacity: 0, duration: 1 });
-                    }
-                });
-            });
-            
-            // Back to Portal
-            document.getElementById('back-to-portal').addEventListener('click', () => {
-                gsap.to('#timemachine-screen', {
-                    opacity: 0,
-                    duration: 1,
-                    onComplete: () => {
-                        showScreen('portal');
-                        gsap.from('#portal-screen', { opacity: 0, duration: 1 });
-                    }
-                });
-            });
-            
-            // Start Journey - No page refresh
-            document.getElementById('start-journey-btn').addEventListener('click', (e) => {
-                e.preventDefault();
-                gsap.to('#timemachine-screen', {
-                    opacity: 0,
-                    duration: 1,
-                    onComplete: () => {
-                        showScreen('universe');
-                        loadUniverseMessages();
-                        gsap.from('#universe-screen', { opacity: 0, duration: 1 });
-                    }
-                });
-            });
-            
-            // Back to Time Machine
-            document.getElementById('back-to-timemachine').addEventListener('click', () => {
-                gsap.to('#universe-screen', {
-                    opacity: 0,
-                    duration: 1,
-                    onComplete: () => {
-                        showScreen('timemachine');
-                        gsap.from('#timemachine-screen', { opacity: 0, duration: 1 });
-                    }
-                });
-            });
-            
-            // Previous Chapter
-            document.getElementById('prev-chapter').addEventListener('click', () => {
-                if (appState.currentTimeline > 0) {
-                    appState.currentTimeline--;
-                    gsap.to('#messages-container', {
-                        opacity: 0,
-                        x: -50,
-                        duration: 0.4,
-                        onComplete: () => {
-                            loadUniverseMessages();
-                            gsap.fromTo('#messages-container', 
-                                { opacity: 0, x: 50 },
-                                { opacity: 1, x: 0, duration: 0.4 }
-                            );
-                        }
-                    });
-                }
-            });
-            
-            // Next Chapter
-            document.getElementById('next-chapter').addEventListener('click', () => {
-                if (appState.currentTimeline < timelineData.length - 1) {
-                    appState.currentTimeline++;
-                    gsap.to('#messages-container', {
-                        opacity: 0,
-                        x: 50,
-                        duration: 0.4,
-                        onComplete: () => {
-                            loadUniverseMessages();
-                            gsap.fromTo('#messages-container', 
-                                { opacity: 0, x: -50 },
-                                { opacity: 1, x: 0, duration: 0.4 }
-                            );
-                        }
-                    });
-                } else {
-                    gsap.to('#universe-screen', {
-                        opacity: 0,
-                        duration: 1,
-                        onComplete: () => {
-                            showScreen('forever');
-                            typeLetter();
-                            gsap.from('#forever-screen', { opacity: 0, duration: 1 });
-                        }
-                    });
-                }
-            });
-            
-            // Restart - PAGE REFRESH
-            document.getElementById('restart-btn').addEventListener('click', () => {
-                location.reload();
-            });
+    const initStars = () => {
+      stars = [];
+      const starCount = window.innerWidth < 768 ? 150 : 300;
+      for (let i = 0; i < starCount; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() * 2,
+          speed: Math.random() * 0.5 + 0.1,
+          opacity: Math.random()
         });
-    </script>
-</body>
-</html>
+      }
+    };
+
+    const animate = () => {
+      ctx.fillStyle = 'rgba(10, 10, 25, 0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      stars.forEach(star => {
+        ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        star.opacity = Math.sin(Date.now() * 0.001 + star.x) * 0.5 + 0.5;
+      });
+
+      animationId = requestAnimationFrame(animate);
+    };
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    animate();
+
+    return () => {
+      window.removeEventListener('resize', resizeCanvas);
+      cancelAnimationFrame(animationId);
+    };
+  }, [scene]);
+
+  // Simple heartbeat sound using Web Audio API
+  const playHeartbeat = () => {
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    const ctx = audioContextRef.current;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    
+    osc.frequency.value = 55;
+    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+    
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.5);
+  };
+
+  useEffect(() => {
+    if (audioEnabled && scene !== 'void' && scene !== 'final') {
+      const interval = setInterval(playHeartbeat, 1200);
+      return () => clearInterval(interval);
+    }
+  }, [audioEnabled, scene]);
+
+  const handleStart = () => {
+    setScene('birth');
+    setStarBurst(true);
+    setTimeout(() => {
+      setScene('universe');
+      setStarBurst(false);
+    }, 3000);
+  };
+
+  const handlePlanetClick = (planet) => {
+    setSelectedPlanet(planet);
+  };
+
+  const closePlanet = () => {
+    setSelectedPlanet(null);
+  };
+
+  const goToFinal = () => {
+    setScene('final');
+  };
+
+  const replay = () => {
+    setScene('void');
+    setSelectedPlanet(null);
+  };
+
+  return (
+    <div className="relative w-full h-screen overflow-hidden bg-gradient-to-b from-[#0a0a19] via-[#1a0a2e] to-[#0a0a19]">
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+
+      {/* Audio Toggle */}
+      {scene !== 'void' && (
+        <button
+          onClick={() => setAudioEnabled(!audioEnabled)}
+          className="absolute top-4 right-4 z-50 p-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all"
+        >
+          {audioEnabled ? <Volume2 className="w-5 h-5 text-white" /> : <VolumeX className="w-5 h-5 text-white" />}
+        </button>
+      )}
+
+      {/* VOID SCENE */}
+      {scene === 'void' && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center px-6 animate-fade-in">
+            <div className="mb-8">
+              {[...Array(20)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute animate-twinkle"
+                  style={{
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                    width: '2px',
+                    height: '2px',
+                    backgroundColor: 'white',
+                    borderRadius: '50%',
+                    animationDelay: `${Math.random() * 3}s`
+                  }}
+                />
+              ))}
+            </div>
+            <h1 className="text-white text-2xl md:text-4xl font-light mb-8 animate-pulse-slow">
+              Before there was us...
+            </h1>
+            <p className="text-white/60 text-lg md:text-xl mb-12">there was silence.</p>
+            <button
+              onClick={handleStart}
+              className="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/30 rounded-full text-white hover:bg-white/20 transition-all duration-300 text-lg"
+            >
+              Begin the Journey
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* BIRTH SCENE */}
+      {scene === 'birth' && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center px-6">
+            <div className={`mb-8 ${starBurst ? 'animate-star-burst' : ''}`}>
+              <div className="w-32 h-32 md:w-48 md:h-48 mx-auto rounded-full bg-gradient-to-r from-yellow-200 via-yellow-400 to-yellow-200 animate-pulse-glow shadow-2xl shadow-yellow-500/50" />
+            </div>
+            <h1 className="text-white text-3xl md:text-5xl font-light animate-fade-in-up">
+              Then, you appeared.
+            </h1>
+          </div>
+        </div>
+      )}
+
+      {/* UNIVERSE SCENE */}
+      {scene === 'universe' && !selectedPlanet && (
+        <div className="absolute inset-0">
+          {/* Center Sun (Her) */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-r from-yellow-200 via-yellow-400 to-yellow-200 animate-pulse-glow shadow-2xl shadow-yellow-500/50" />
+            <p className="text-white text-center mt-4 text-sm md:text-base font-light">You</p>
+          </div>
+
+          {/* Orbiting Planets */}
+          {planets.map((planet, idx) => (
+            <button
+              key={planet.id}
+              onClick={() => handlePlanetClick(planet)}
+              className="absolute animate-float group"
+              style={{
+                left: `${planet.x}%`,
+                top: `${planet.y}%`,
+                animationDelay: `${idx * 0.5}s`
+              }}
+            >
+              <div
+                className="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-white/20 backdrop-blur-sm hover:scale-110 transition-transform duration-300"
+                style={{ backgroundColor: planet.color }}
+              />
+              <p className="text-white text-xs md:text-sm text-center mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                {planet.name}
+              </p>
+            </button>
+          ))}
+
+          {/* Eternal Star */}
+          <button
+            onClick={goToFinal}
+            className="absolute top-[15%] right-[10%] animate-pulse-glow group"
+          >
+            <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-r from-pink-300 via-purple-300 to-blue-300 shadow-2xl shadow-purple-500/50 hover:scale-110 transition-transform" />
+            <p className="text-white text-sm md:text-base text-center mt-2">✨ Eternal Star</p>
+          </button>
+
+          {/* Instructions */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center px-6">
+            <p className="text-white/60 text-sm md:text-base">Touch the planets to explore our story</p>
+          </div>
+        </div>
+      )}
+
+      {/* PLANET DETAIL */}
+      {selectedPlanet && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/70 backdrop-blur-md z-40 animate-fade-in p-6">
+          <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 md:p-12 max-w-2xl animate-scale-in">
+            <div
+              className="w-20 h-20 md:w-24 md:h-24 mx-auto rounded-full mb-6 animate-pulse-glow"
+              style={{ backgroundColor: selectedPlanet.color }}
+            />
+            <h2 className="text-white text-2xl md:text-4xl font-light mb-6 text-center">
+              {selectedPlanet.name}
+            </h2>
+            <p className="text-white/90 text-base md:text-lg mb-6 leading-relaxed text-center">
+              {selectedPlanet.message}
+            </p>
+            <p className="text-white/70 text-sm md:text-base italic text-center mb-8">
+              {selectedPlanet.memory}
+            </p>
+            <button
+              onClick={closePlanet}
+              className="block mx-auto px-8 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white hover:bg-white/30 transition-all"
+            >
+              Continue Journey
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* FINAL SCENE */}
+      {scene === 'final' && (
+        <div className="absolute inset-0 flex items-center justify-center px-6">
+          <div className="text-center max-w-3xl animate-fade-in">
+            <div className="mb-8 relative">
+              <Heart className="w-32 h-32 md:w-48 md:h-48 mx-auto text-pink-400 animate-pulse-glow" fill="currentColor" />
+              <div className="absolute inset-0 animate-ping-slow">
+                <Heart className="w-32 h-32 md:w-48 md:h-48 mx-auto text-pink-400/30" />
+              </div>
+            </div>
+            <h1 className="text-white text-3xl md:text-5xl font-light mb-8 leading-relaxed animate-fade-in-up">
+              You're not just a part of my life...
+            </h1>
+            <h2 className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-4xl md:text-6xl font-bold mb-12 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+              You ARE my universe.
+            </h2>
+            <div className="bg-white/5 backdrop-blur-lg border border-white/20 rounded-3xl p-8 md:p-12 mb-8 animate-fade-in-up" style={{ animationDelay: '1s' }}>
+              <p className="text-white/90 text-lg md:text-xl leading-relaxed mb-6">
+                I built this universe not because I love space... but because you made my world infinite.
+              </p>
+              <p className="text-white/90 text-lg md:text-xl leading-relaxed mb-6">
+                Every star here is a heartbeat. Every planet is a memory.
+              </p>
+              <p className="text-white/90 text-lg md:text-xl leading-relaxed">
+                And at the center of it all... is you.
+              </p>
+              <p className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-400 text-2xl md:text-3xl font-bold mt-8">
+                My sun. My forever. ☀️
+              </p>
+            </div>
+            <button
+              onClick={replay}
+              className="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/30 rounded-full text-white hover:bg-white/20 transition-all inline-flex items-center gap-2"
+            >
+              <RotateCcw className="w-5 h-5" />
+              Orbit Forever
+            </button>
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
+        @keyframes fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes fade-in-up {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes scale-in {
+          from { opacity: 0; transform: scale(0.8); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+        @keyframes pulse-glow {
+          0%, 100% { box-shadow: 0 0 40px currentColor, 0 0 80px currentColor; }
+          50% { box-shadow: 0 0 20px currentColor, 0 0 40px currentColor; }
+        }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
+        }
+        @keyframes twinkle {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 1; }
+        }
+        @keyframes star-burst {
+          0% { transform: scale(1); opacity: 1; }
+          100% { transform: scale(5); opacity: 0; }
+        }
+        @keyframes ping-slow {
+          0% { transform: scale(1); opacity: 1; }
+          100% { transform: scale(1.5); opacity: 0; }
+        }
+        .animate-fade-in { animation: fade-in 1s ease-out; }
+        .animate-fade-in-up { animation: fade-in-up 1s ease-out; }
+        .animate-scale-in { animation: scale-in 0.5s ease-out; }
+        .animate-pulse-slow { animation: pulse-slow 3s ease-in-out infinite; }
+        .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        .animate-twinkle { animation: twinkle 3s ease-in-out infinite; }
+        .animate-star-burst { animation: star-burst 2s ease-out; }
+        .animate-ping-slow { animation: ping-slow 3s ease-out infinite; }
+      `}</style>
+    </div>
+  );
+};
+
+export default EternalUniverse;
